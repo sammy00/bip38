@@ -11,6 +11,8 @@ import (
 	"golang.org/x/crypto/scrypt"
 )
 
+// Encrypt encrypts the given private key byte sequence
+// with the given passphrase
 func Encrypt(data []byte, passphrase string) (string, error) {
 	priv, _ := btcec.PrivKeyFromBytes(btcec.S256(), data)
 
@@ -39,10 +41,11 @@ func Encrypt(data []byte, passphrase string) (string, error) {
 	return CheckEncode(payload[:], [3]byte{0x01, 0x42, 0xc0}), nil
 }
 
-func xor(priv, derivedHash []byte) []byte {
+// xor calculates the (x[0]^y[0], x[1]^y[1],..., x[32]^y[32])
+func xor(x, y []byte) []byte {
 	var out [32]byte
 	for i := range out {
-		out[i] = priv[i] ^ derivedHash[i]
+		out[i] = x[i] ^ y[i]
 	}
 
 	return out[:]

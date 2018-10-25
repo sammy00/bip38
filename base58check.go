@@ -2,6 +2,7 @@ package bip38
 
 import "github.com/sammy00/base58"
 
+// CheckDecode decodes payload and version prefix out of the input base58 string
 func CheckDecode(input string) ([]byte, [versionLen]byte, error) {
 	decoded := base58.Decode(input)
 
@@ -19,11 +20,12 @@ func CheckDecode(input string) ([]byte, [versionLen]byte, error) {
 	}
 
 	payload := decoded[versionLen : len(decoded)-4]
-	//result = append(result, payload...)
 
 	return payload, version, nil
 }
 
+// CheckEncode encodes the input data bytes prepended by the given version
+// into a base58 string
 func CheckEncode(input []byte, version [versionLen]byte) string {
 	b := make([]byte, 0, versionLen+len(input)+4)
 	b = append(b, version[:]...)
