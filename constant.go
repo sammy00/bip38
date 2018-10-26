@@ -7,7 +7,3 @@ const (
 	p      = 8
 	keyLen = 64
 )
-
-const (
-	versionLen = 3
-)

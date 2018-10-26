@@ -12,7 +12,7 @@ import (
 
 func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	// TODO: distinguish decoding routine based on version
-	payload, _, err := CheckDecode(encrypted)
+	payload, mode, err := CheckDecode(encrypted)
 	if nil != err {
 		return nil, err
 	}
@@ -34,17 +34,43 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 
 	priv := xor(plain[:], dk[:32])
 
-	if !bytes.Equal(payload[:4], AddressHash(priv, false)) {
-		return nil, errors.New("invalid address hash")
+	switch mode {
+	case UncompressedNoECMultiply, UncompressedECMultiply:
+		if !bytes.Equal(payload[:4], AddressHash(priv, false)) {
+			err = errors.New("invalid address hash")
+		}
+	case CompressedNoECMultiply, CompressedECMultiply:
+		if !bytes.Equal(payload[:4], AddressHash(priv, true)) {
+			err = errors.New("invalid address hash")
+		}
+	default:
 	}
+
+	//if !bytes.Equal(payload[:4], AddressHash(priv, false)) {
+	//	return nil, errors.New("invalid address hash")
+	//}
 
 	return priv, nil
 }
 
 // Encrypt encrypts the given private key byte sequence
 // with the given passphrase
-func Encrypt(data []byte, passphrase string) (string, error) {
-	addrHash := AddressHash(data, false)
+func Encrypt(data []byte, passphrase string, mode EncryptionMode) (
+	string, error) {
+
+	var addrHash []byte
+	switch mode {
+	case UncompressedNoECMultiply:
+		addrHash = AddressHash(data, false)
+	case CompressedNoECMultiply:
+		addrHash = AddressHash(data, false)
+	case UncompressedECMultiply:
+		panic("not implemented")
+	case CompressedECMultiply:
+		panic("not implemented")
+	default:
+		return "", errors.New("not implemented")
+	}
 
 	dk, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)),
 		addrHash, n, r, p, keyLen)
@@ -64,7 +90,7 @@ func Encrypt(data []byte, passphrase string) (string, error) {
 	C.Encrypt(payload[4:], block[:16])
 	C.Encrypt(payload[20:], block[16:])
 
-	return CheckEncode(payload[:], [3]byte{0x01, 0x42, 0xc0}), nil
+	return CheckEncode(payload[:], mode), nil
 }
 
 // xor calculates the (x[0]^y[0], x[1]^y[1],..., x[32]^y[32])

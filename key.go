@@ -9,7 +9,13 @@ import (
 func AddressHash(priv []byte, compressed bool) []byte {
 	privKey, _ := btcec.PrivKeyFromBytes(btcec.S256(), priv)
 
-	pub := privKey.PubKey().SerializeUncompressed()
+	var pub []byte
+	if compressed {
+		pub = privKey.PubKey().SerializeCompressed()
+	} else {
+		pub = privKey.PubKey().SerializeUncompressed()
+	}
+
 	addr := encoding.PublicKeyToAddress(pub)
 	checksum := hash.DoubleSum([]byte(addr))
 
