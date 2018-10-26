@@ -7,9 +7,6 @@ import (
 
 	"golang.org/x/text/unicode/norm"
 
-	"github.com/btcsuite/btcd/btcec"
-	"github.com/sammy00/bip38/encoding"
-	"github.com/sammy00/bip38/hash"
 	"golang.org/x/crypto/scrypt"
 )
 
@@ -36,10 +33,8 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	C.Decrypt(plain[16:], payload[20:])
 
 	priv := xor(plain[:], dk[:32])
-	addr := encoding.AddressFromPrivateKey(priv, false)
-	addrHash := hash.DoubleSum([]byte(addr))
 
-	if !bytes.Equal(addrHash[:4], payload[:4]) {
+	if !bytes.Equal(payload[:4], AddressHash(priv, false)) {
 		return nil, errors.New("invalid address hash")
 	}
 
@@ -49,20 +44,16 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 // Encrypt encrypts the given private key byte sequence
 // with the given passphrase
 func Encrypt(data []byte, passphrase string) (string, error) {
-	priv, _ := btcec.PrivKeyFromBytes(btcec.S256(), data)
-
-	pub := priv.PubKey().SerializeUncompressed()
-	addr := encoding.PublicKeyToAddress(pub)
-	addrHash := hash.DoubleSum([]byte(addr))
+	addrHash := AddressHash(data, false)
 
 	dk, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)),
-		addrHash[:4], n, r, p, keyLen)
+		addrHash, n, r, p, keyLen)
 	if nil != err {
 		return "", err
 	}
 
 	var payload [36]byte
-	copy(payload[:], addrHash[:4]) // append salt
+	copy(payload[:], addrHash) // append salt
 
 	C, err := aes.NewCipher(dk[32:])
 	if nil != err {
