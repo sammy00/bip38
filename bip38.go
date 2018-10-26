@@ -46,10 +46,6 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	default:
 	}
 
-	//if !bytes.Equal(payload[:4], AddressHash(priv, false)) {
-	//	return nil, errors.New("invalid address hash")
-	//}
-
 	return priv, nil
 }
 
@@ -63,7 +59,7 @@ func Encrypt(data []byte, passphrase string, mode EncryptionMode) (
 	case UncompressedNoECMultiply:
 		addrHash = AddressHash(data, false)
 	case CompressedNoECMultiply:
-		addrHash = AddressHash(data, false)
+		addrHash = AddressHash(data, true)
 	case UncompressedECMultiply:
 		panic("not implemented")
 	case CompressedECMultiply:
