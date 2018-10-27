@@ -27,6 +27,7 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	//fmt.Println(len(payload))
 
 	addrHash, ownerEntropy := payload[:4], payload[4:12]
+	//fmt.Printf("addrHash=%x\n", addrHash)
 
 	pass, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerEntropy,
 		n1, r1, p1, keyLen1)
