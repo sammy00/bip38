@@ -49,3 +49,38 @@ func TestEncryptPassphrase(t *testing.T) {
 		}
 	}
 }
+
+func TestEncryptPassphraseX(t *testing.T) {
+	testCases := []struct {
+		rand          io.Reader
+		passphrase    string
+		lot, sequence uint32
+		expect        string
+	}{
+		{
+			&EntropyReader{Stream: []byte{0x4f, 0xca, 0x5a, 0x97}},
+			"MOLON LABE",
+			263183, 1,
+			"passphraseaB8feaLQDENqCgr4gKZpmf4VoaT6qdjJNJiv7fsKvjqavcJxvuR1hy25aTu5sX",
+		},
+		{
+			&EntropyReader{Stream: []byte{0xc4, 0x0e, 0xa7, 0x6f}},
+			"ΜΟΛΩΝ ΛΑΒΕ",
+			806938, 1,
+			"passphrased3z9rQJHSyBkNBwTRPkUGNVEVrUAcfAXDyRU1V28ie6hNFbqDwbFBvsTK7yWVK",
+		},
+	}
+
+	for i, c := range testCases {
+		passphraseCode, err := ec.EncryptPassphraseX(c.rand, c.passphrase,
+			c.lot, c.sequence)
+		if nil != err {
+			t.Fatalf("#%d unexpected error: %v", i, err)
+		}
+
+		if passphraseCode != c.expect {
+			t.Fatalf("#%d invalid passphrase code: got %s, expect %s", i,
+				passphraseCode, c.expect)
+		}
+	}
+}

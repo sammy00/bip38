@@ -1,11 +1,11 @@
 package ec
 
 import (
-	"fmt"
 	"io"
 
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/sammy00/bip38/encoding"
+	"github.com/sammy00/bip38/hash"
 	"golang.org/x/crypto/scrypt"
 	"golang.org/x/text/unicode/norm"
 )
@@ -25,7 +25,7 @@ func EncryptPassphrase(rand io.Reader, passphrase string) (
 	if nil != err {
 		return "", err
 	}
-	fmt.Printf("pass=% x\n", pass)
+	//fmt.Printf("pass=% x\n", pass)
 
 	_, pub := btcec.PrivKeyFromBytes(btcec.S256(), pass)
 	passPoint := pub.SerializeCompressed()
@@ -34,7 +34,7 @@ func EncryptPassphrase(rand io.Reader, passphrase string) (
 		noLotSequence[:], append(ownerEntropy[:], passPoint...)), nil
 }
 
-func EncryptPassphraseEx(rand io.Reader, passphrase string,
+func EncryptPassphraseX(rand io.Reader, passphrase string,
 	lot, sequence uint32) (string, error) {
 	var ownerEntropy [8]byte
 	if _, err := rand.Read(ownerEntropy[:4]); nil != err {
@@ -46,5 +46,19 @@ func EncryptPassphraseEx(rand io.Reader, passphrase string,
 	ownerEntropy[6] = byte((lot << 4 & 0xf0) | (sequence >> 8 & 0x0f))
 	ownerEntropy[7] = byte(sequence & 0xff)
 
-	return "", nil
+	//fmt.Printf("ownerEntropy=%x\n", ownerEntropy[:])
+
+	pre, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerEntropy[:4],
+		n1, r1, p1, keyLen1)
+	if nil != err {
+		return "", err
+	}
+
+	pass := hash.DoubleSum(append(pre, ownerEntropy[:]...))
+
+	_, pub := btcec.PrivKeyFromBytes(btcec.S256(), pass)
+	passPoint := pub.SerializeCompressed()
+
+	return encoding.CheckEncode(
+		withLotSequence[:], append(ownerEntropy[:], passPoint...)), nil
 }
