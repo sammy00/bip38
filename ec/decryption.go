@@ -19,7 +19,7 @@ import (
 )
 
 func Decrypt(encrypted string, passphrase string) ([]byte, error) {
-	_, payload, err := encoding.CheckDecode(encrypted, VersionLen)
+	version, payload, err := encoding.CheckDecode(encrypted, VersionLen)
 	if nil != err {
 		return nil, err
 	}
@@ -27,13 +27,26 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	//fmt.Printf("%x\n", payload)
 	//fmt.Println(len(payload))
 
+	var ownerSalt []byte
+	flag := version[VersionLen-1]
+	//if flag := version[VersionLen-1]; 0x04&flag != 0 {
+	if 0 != flag&0x04 {
+		ownerSalt = payload[4:8]
+	} else {
+		ownerSalt = payload[4:12]
+	}
+
 	addrHash, ownerEntropy := payload[:4], payload[4:12]
 	//fmt.Printf("addrHash=%x\n", addrHash)
 
-	pass, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerEntropy,
+	pass, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerSalt,
 		n1, r1, p1, keyLen1)
 	if nil != err {
 		return nil, err
+	}
+
+	if 0 != flag&0x04 {
+		pass = hash.DoubleSum(append(pass, ownerEntropy[:]...))
 	}
 
 	_, pub := btcec.PrivKeyFromBytes(btcec.S256(), pass)

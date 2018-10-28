@@ -37,6 +37,13 @@ func TestDecrypt(t *testing.T) {
 				Stream: []byte{0x67, 0x01, 0x0a, 0x95, 0x73, 0x41, 0x89, 0x06},
 			},
 		},
+		{
+			"MOLON LABE",
+			"passphraseaB8feaLQDENqCgr4gKZpmf4VoaT6qdjJNJiv7fsKvjqavcJxvuR1hy25aTu5sX",
+			"6PgNBNNzDkKdhkT6uJntUXwwzQV8Rr2tZcbkDcuC9DZRsS6AtHts4Ypo1j",
+			"44EA95AFBF138356A05EA32110DFD627232D0F2991AD221187BE356F19FA8190",
+			nil,
+		},
 	}
 
 	for i, c := range testCases {
