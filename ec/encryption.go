@@ -50,10 +50,15 @@ func Encrypt(rand io.Reader, data []byte, passphraseEx string,
 	// ownerEntropy=payload[:8]
 	// passPoint=payload[8:]
 	salt := append(addrHash, payload[:8]...)
+	//fmt.Printf("ownerEntropy=%x\n", payload[:8])
+	//fmt.Printf("salt=%x\n", salt)
+	//fmt.Printf("pass=%x\n", payload[8:])
 	dk, err := scrypt.Key(payload[8:], salt, n2, r2, p2, keyLen2)
 	if nil != err {
 		return "", err
 	}
+	//fmt.Printf("dk1=%x\n", dk[:32])
+	//fmt.Printf("dk2=%x\n", dk[32:])
 
 	encryptor, err := aes.NewCipher(dk[32:])
 	if nil != err {
@@ -83,5 +88,26 @@ func Encrypt(rand io.Reader, data []byte, passphraseEx string,
 	out = append(out, encryptedPart1[:8]...)
 	out = append(out, encryptedPart2[:]...)
 
+	//fmt.Printf("flag")
+	//fmt.Printf("addrHash")
+	/*fmt.Println("{")
+	fmt.Printf("0x%02x,\n", version[VersionLen-1])
+	hexify(addrHash)
+	hexify(payload[:8])
+	hexify(b)
+	hexify(dk[:32])
+	hexify(dk[32:])
+	fmt.Println("},")*/
+
 	return encoding.CheckEncode(version, out), nil
 }
+
+/*
+func hexify(data []byte) {
+	fmt.Printf("[]byte{")
+	for _, v := range data {
+		fmt.Printf("0x%02x,", v)
+	}
+	fmt.Println("},")
+}
+*/

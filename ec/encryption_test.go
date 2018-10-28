@@ -30,7 +30,7 @@ func TestEncrypt(t *testing.T) {
 				},
 			},
 		},
-		{
+		/*{
 			"Satoshi",
 			"passphraseoRDGAXTWzbp72eVbtUDdn1rwpgPUGjNZEc6CGBo8i5EC1FPW8wcnLdq4ThKzAS",
 			"6PfLGnQs6VZnrNpmVKfjotbnQuaJK4KZoPFrAjx1JMJUa1Ft8gnf5WxfKd",
@@ -42,7 +42,7 @@ func TestEncrypt(t *testing.T) {
 					0xf4, 0x96, 0x06, 0xdb, 0x3b, 0x47, 0xa4, 0x97,
 				},
 			},
-		},
+		},*/
 	}
 
 	for i, c := range testCases {

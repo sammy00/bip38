@@ -6,12 +6,13 @@ import (
 	"errors"
 	"math/big"
 
+	"github.com/btcsuite/btcd/btcec"
+
 	"github.com/sammy00/bip38"
 
 	"golang.org/x/crypto/scrypt"
 	"golang.org/x/text/unicode/norm"
 
-	"github.com/SHDMT/btcec"
 	"github.com/sammy00/bip38/bytes"
 	"github.com/sammy00/bip38/encoding"
 	"github.com/sammy00/bip38/hash"

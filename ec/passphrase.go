@@ -1,9 +1,10 @@
 package ec
 
 import (
+	"fmt"
 	"io"
 
-	"github.com/SHDMT/btcec"
+	"github.com/btcsuite/btcd/btcec"
 	"github.com/sammy00/bip38/encoding"
 	"golang.org/x/crypto/scrypt"
 	"golang.org/x/text/unicode/norm"
@@ -24,6 +25,7 @@ func EncryptPassphrase(rand io.Reader, passphrase string) (
 	if nil != err {
 		return "", err
 	}
+	fmt.Printf("pass=% x\n", pass)
 
 	_, pub := btcec.PrivKeyFromBytes(btcec.S256(), pass)
 	passPoint := pub.SerializeCompressed()
