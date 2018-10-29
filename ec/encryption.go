@@ -14,7 +14,8 @@ import (
 	"github.com/sammy00/bip38/hash"
 )
 
-func Encrypt(rand io.Reader, data []byte, passphraseEx string,
+//func Encrypt(rand io.Reader, data []byte, passphraseEx string,
+func Encrypt(rand io.Reader, passphraseEx string,
 	compressed bool) (string, error) {
 
 	var seedb [24]byte
