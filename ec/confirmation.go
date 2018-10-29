@@ -42,6 +42,11 @@ func RecoverAddress(passphrase, code string) (string, error) {
 	if nil != err {
 		return "", err
 	}
+
+	if 0 != flag&0x04 { // lot-sequence being included
+		pass = hash.DoubleSum(append(pass, ownerEntropy[:]...))
+	}
+
 	//fmt.Println("2")
 	//fmt.Printf("pass=%x\n", pass)
 	var pubKey *btcec.PublicKey
