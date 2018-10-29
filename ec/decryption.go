@@ -8,8 +8,6 @@ import (
 
 	"github.com/btcsuite/btcd/btcec"
 
-	"github.com/sammy00/bip38"
-
 	"golang.org/x/crypto/scrypt"
 	"golang.org/x/text/unicode/norm"
 
@@ -90,7 +88,7 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	z := new(big.Int).Mul(x, y)
 	z.Mod(z, btcec.S256().N)
 
-	addrHash2 := bip38.AddressHash(z.Bytes(), false)
+	addrHash2 := hash.AddressChecksum(z.Bytes(), false)
 	if !gobytes.Equal(addrHash, addrHash2) {
 		return nil, errors.New("invalid address hash")
 	}
