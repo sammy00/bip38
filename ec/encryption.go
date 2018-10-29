@@ -80,22 +80,38 @@ func Encrypt(rand io.Reader, data []byte, passphraseEx string,
 	bytes.XOR(block[:], block[:], dk[16:32])
 	encryptor.Encrypt(encryptedPart2[:], block[:])
 
-	var version []byte
+	/*
+		var version []byte
+		if compressed {
+			if 0x53 == magic[MagicLen-1] {
+				version = CompressedNoLotSequence[:]
+			} else {
+				version = CompressedWithLotSequence[:]
+			}
+		} else {
+			if 0x53 == magic[MagicLen-1] {
+				version = UncompressedNoLotSequence[:]
+			} else {
+				version = UncompressedWithLotSequence[:]
+			}
+		}
+	*/
+
+	var flag byte
 	if compressed {
-		if 0x53 == magic[MagicLen-1] {
-			version = CompressedNoLotSequence[:]
-		} else {
-			version = CompressedWithLotSequence[:]
-		}
+		flag |= Compressed
 	} else {
-		if 0x53 == magic[MagicLen-1] {
-			version = UncompressedNoLotSequence[:]
-		} else {
-			version = UncompressedWithLotSequence[:]
-		}
+		flag |= Uncompressed
+	}
+	if 0x51 == magic[MagicLen-1] {
+		flag |= WithLotSequence
+	} else {
+		flag |= NoLotSequence
 	}
 
+	//out := make([]byte, 0, 39-VersionLenOld)
 	out := make([]byte, 0, 39-VersionLen)
+	out = append(out, flag)
 	out = append(out, addrHash...)
 	out = append(out, payload[:8]...)
 	out = append(out, encryptedPart1[:8]...)
@@ -104,7 +120,7 @@ func Encrypt(rand io.Reader, data []byte, passphraseEx string,
 	//fmt.Printf("flag")
 	//fmt.Printf("addrHash")
 	/*fmt.Println("{")
-	fmt.Printf("0x%02x,\n", version[VersionLen-1])
+	fmt.Printf("0x%02x,\n", version[VersionLenOld-1])
 	hexify(addrHash)
 	hexify(payload[:8])
 	hexify(b)
@@ -113,7 +129,8 @@ func Encrypt(rand io.Reader, data []byte, passphraseEx string,
 	fmt.Println("},")
 	*/
 
-	return encoding.CheckEncode(version, out), nil
+	//return encoding.CheckEncode(version, out), nil
+	return encoding.CheckEncode(Version, out), nil
 }
 
 ///*

@@ -19,7 +19,7 @@ import (
 )
 
 func Decrypt(encrypted string, passphrase string) ([]byte, error) {
-	version, payload, err := encoding.CheckDecode(encrypted, VersionLen)
+	version, payload, err := encoding.CheckDecode(encrypted, VersionLenOld)
 	if nil != err {
 		return nil, err
 	}
@@ -28,8 +28,8 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	//fmt.Println(len(payload))
 
 	var ownerSalt []byte
-	flag := version[VersionLen-1]
-	//if flag := version[VersionLen-1]; 0x04&flag != 0 {
+	flag := version[VersionLenOld-1]
+	//if flag := version[VersionLenOld-1]; 0x04&flag != 0 {
 	if 0 != flag&0x04 {
 		ownerSalt = payload[4:8]
 	} else {
