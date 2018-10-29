@@ -23,10 +23,13 @@ func Encrypt(rand io.Reader, data []byte, passphraseEx string,
 
 	b := hash.DoubleSum(seedb[:])
 
-	_, payload, err := encoding.CheckDecode(passphraseEx, MagicLen)
+	magic, payload, err := encoding.CheckDecode(passphraseEx, MagicLen)
 	if nil != err {
 		return "", err
 	}
+
+	//fmt.Printf("magic=%x\n", magic)
+	//if 0x51 magic[MagicLen-1]
 
 	//btcec.PublicKey
 	curve := btcec.S256()
@@ -59,6 +62,7 @@ func Encrypt(rand io.Reader, data []byte, passphraseEx string,
 	}
 	//fmt.Printf("dk1=%x\n", dk[:32])
 	//fmt.Printf("dk2=%x\n", dk[32:])
+	//fmt.Printf("dk=%x\n", dk)
 
 	encryptor, err := aes.NewCipher(dk[32:])
 	if nil != err {
@@ -77,9 +81,17 @@ func Encrypt(rand io.Reader, data []byte, passphraseEx string,
 
 	var version []byte
 	if compressed {
-		version = CompressedNoLotSequence[:]
+		if 0x53 == magic[MagicLen-1] {
+			version = CompressedNoLotSequence[:]
+		} else {
+			version = CompressedWithLotSequence[:]
+		}
 	} else {
-		version = UncompressedNoLotSequence[:]
+		if 0x53 == magic[MagicLen-1] {
+			version = UncompressedNoLotSequence[:]
+		} else {
+			version = UncompressedWithLotSequence[:]
+		}
 	}
 
 	out := make([]byte, 0, 39-VersionLen)

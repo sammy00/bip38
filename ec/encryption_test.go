@@ -30,7 +30,7 @@ func TestEncrypt(t *testing.T) {
 				},
 			},
 		},
-		/*{
+		{
 			"Satoshi",
 			"passphraseoRDGAXTWzbp72eVbtUDdn1rwpgPUGjNZEc6CGBo8i5EC1FPW8wcnLdq4ThKzAS",
 			"6PfLGnQs6VZnrNpmVKfjotbnQuaJK4KZoPFrAjx1JMJUa1Ft8gnf5WxfKd",
@@ -42,7 +42,33 @@ func TestEncrypt(t *testing.T) {
 					0xf4, 0x96, 0x06, 0xdb, 0x3b, 0x47, 0xa4, 0x97,
 				},
 			},
-		},*/
+		},
+		{
+			"MOLON LABE",
+			"passphraseaB8feaLQDENqCgr4gKZpmf4VoaT6qdjJNJiv7fsKvjqavcJxvuR1hy25aTu5sX",
+			"6PgNBNNzDkKdhkT6uJntUXwwzQV8Rr2tZcbkDcuC9DZRsS6AtHts4Ypo1j",
+			"44EA95AFBF138356A05EA32110DFD627232D0F2991AD221187BE356F19FA8190",
+			&EntropyReader{
+				Stream: []byte{
+					0x87, 0xa1, 0x3b, 0x07, 0x85, 0x8f, 0xa7, 0x53,
+					0xcd, 0x3a, 0xb3, 0xf1, 0xc5, 0xea, 0xfb, 0x5f,
+					0x12, 0x57, 0x9b, 0x6c, 0x33, 0xc9, 0xa5, 0x3f,
+				},
+			},
+		},
+		{
+			"ΜΟΛΩΝ ΛΑΒΕ",
+			"passphrased3z9rQJHSyBkNBwTRPkUGNVEVrUAcfAXDyRU1V28ie6hNFbqDwbFBvsTK7yWVK",
+			"6PgGWtx25kUg8QWvwuJAgorN6k9FbE25rv5dMRwu5SKMnfpfVe5mar2ngH",
+			"CA2759AA4ADB0F96C414F36ABEB8DB59342985BE9FA50FAAC228C8E7D90E3006",
+			&EntropyReader{
+				Stream: []byte{
+					0x03, 0xb0, 0x6a, 0x1e, 0xa7, 0xf9, 0x21, 0x9a,
+					0xe3, 0x64, 0x56, 0x0d, 0x7b, 0x98, 0x5a, 0xb1,
+					0xfa, 0x27, 0x02, 0x5a, 0xaa, 0x7e, 0x42, 0x7a,
+				},
+			},
+		},
 	}
 
 	for i, c := range testCases {

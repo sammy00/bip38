@@ -44,6 +44,13 @@ func TestDecrypt(t *testing.T) {
 			"44EA95AFBF138356A05EA32110DFD627232D0F2991AD221187BE356F19FA8190",
 			nil,
 		},
+		{
+			"ΜΟΛΩΝ ΛΑΒΕ",
+			"passphrased3z9rQJHSyBkNBwTRPkUGNVEVrUAcfAXDyRU1V28ie6hNFbqDwbFBvsTK7yWVK",
+			"6PgGWtx25kUg8QWvwuJAgorN6k9FbE25rv5dMRwu5SKMnfpfVe5mar2ngH",
+			"CA2759AA4ADB0F96C414F36ABEB8DB59342985BE9FA50FAAC228C8E7D90E3006",
+			nil,
+		},
 	}
 
 	for i, c := range testCases {

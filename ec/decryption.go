@@ -57,6 +57,7 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	if nil != err {
 		return nil, err
 	}
+	//fmt.Printf("dk=%x\n", dk)
 
 	decryptor, err := aes.NewCipher(dk[32:])
 	if nil != err {
@@ -75,6 +76,11 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	encryptedPart1 := append(payload[12:20], out[:8]...)
 	decryptor.Decrypt(out[:], encryptedPart1)
 	bytes.XOR(seedb[:16], out[:], dk[:16])
+
+	//for _, v := range seedb {
+	//	fmt.Printf("0x%02x,", v)
+	//}
+	//fmt.Println()
 
 	b := hash.DoubleSum(seedb[:])
 
