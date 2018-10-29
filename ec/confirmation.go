@@ -3,7 +3,8 @@ package ec
 import (
 	gobytes "bytes"
 	"crypto/aes"
-	"errors"
+
+	"github.com/pkg/errors"
 
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/sammy00/bip38/bytes"
@@ -13,30 +14,25 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-const confirmationMagicLen = 5
-
-var (
-	confirmationMagicCode = []byte{0x64, 0x3B, 0xF6, 0xA8, 0x9A}
-)
-
-//func CheckConfirmationCode(passphrase, code string) error {
+// RecoverAddress recovers the generated address out of the given confirmation
+// code based on the given passphrase
 func RecoverAddress(passphrase, code string) (string, error) {
-	_, rawCode, err := encoding.CheckDecode(code, confirmationMagicLen)
-	if nil != err || len(rawCode) != 46 {
+	_, rawCode, err := encoding.CheckDecode(code, ConfirmationMagicLen)
+	if nil != err {
 		return "", err
+	} else if len(rawCode) != RawConfirmationCodeLen {
+		return "", errors.Errorf("invalid code length: %d", len(rawCode))
 	}
 
-	ownerEntropy := rawCode[5:13]
+	flag, ownerEntropy := rawCode[0], rawCode[5:13]
 
 	var ownerSalt []byte
-	flag := rawCode[0]
 	if 0 != flag&0x04 {
 		ownerSalt = ownerEntropy[:4]
 	} else {
 		ownerSalt = ownerEntropy
 	}
-	//fmt.Printf("passphrase=%s\n", passphrase)
-	//fmt.Printf("ownerEntropy=%x\n", ownerEntropy)
+
 	pass, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerSalt,
 		N1, R1, P1, KeyLen1)
 	if nil != err {
@@ -146,5 +142,5 @@ func GenerateConfirmationCode(flag byte, addrHash, ownerEntropy, b,
 	copy(payload[13:], encrypted[:])
 	//fmt.Printf("salt=%x%x\n", addrHash, ownerEntropy)
 
-	return encoding.CheckEncode(confirmationMagicCode, payload), nil
+	return encoding.CheckEncode(ConfirmationMagicCode, payload), nil
 }

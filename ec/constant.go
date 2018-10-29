@@ -12,13 +12,6 @@ const (
 	KeyLen2 = 64
 )
 
-// VersionLen is length of version prefix for encrypting private key
-// according to EC-Multiply mode
-const VersionLen = 2
-
-// Version is the object identifier prefix for EC-Multiply encryption mode
-var Version = []byte{0x01, 0x43}
-
 // flag bits
 const (
 	// Compressed denotes the public key is in compressed form
@@ -30,3 +23,14 @@ const (
 	// WithLotSequence is the opposite to NoLotSequence
 	WithLotSequence = 0x04
 )
+
+// RawConfirmationCodeLen is the length of confirmation code without encoding
+// and the magic prefix
+const RawConfirmationCodeLen = 1 + 4 + 8 + 33
+
+// VersionLen is length of version prefix for encrypting private key
+// according to EC-Multiply mode
+const VersionLen = 2
+
+// Version is the object identifier prefix for EC-Multiply encryption mode
+var Version = []byte{0x01, 0x43}
