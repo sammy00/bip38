@@ -18,6 +18,15 @@ const versionLen = 3
 // different encryption mode
 var versions [][versionLen]byte
 
+const VersionLen = 2
+
+var Version = []byte{0x01, 0x42}
+
+const (
+	Compressed   = 0xe0
+	Uncompressed = 0xc0
+)
+
 func init() {
 	versions = [][versionLen]byte{
 		{}, // reserved
