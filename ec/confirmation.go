@@ -4,7 +4,6 @@ import (
 	gobytes "bytes"
 	"crypto/aes"
 	"errors"
-	"fmt"
 
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/sammy00/bip38/bytes"
@@ -20,11 +19,11 @@ var (
 	confirmationMagicCode = []byte{0x64, 0x3B, 0xF6, 0xA8, 0x9A}
 )
 
-func CheckConfirmationCode(passphrase, code string) error {
+//func CheckConfirmationCode(passphrase, code string) error {
+func RecoverAddress(passphrase, code string) (string, error) {
 	_, rawCode, err := encoding.CheckDecode(code, confirmationMagicLen)
 	if nil != err || len(rawCode) != 46 {
-		fmt.Println("1", len(rawCode))
-		return err
+		return "", err
 	}
 
 	ownerEntropy := rawCode[5:13]
@@ -41,7 +40,7 @@ func CheckConfirmationCode(passphrase, code string) error {
 	pass, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerSalt,
 		n1, r1, p1, keyLen1)
 	if nil != err {
-		return err
+		return "", err
 	}
 	//fmt.Println("2")
 	//fmt.Printf("pass=%x\n", pass)
@@ -53,7 +52,7 @@ func CheckConfirmationCode(passphrase, code string) error {
 	// addrHash|ownerEntropy=rawCode[1:13]
 	dk, err := scrypt.Key(passPoint, rawCode[1:13], n2, r2, p2, keyLen2)
 	if nil != err {
-		return err
+		return "", err
 	}
 	//fmt.Printf("salt=%x\n", rawCode[1:13])
 	//fmt.Printf("dk1=%x\n", dk[:32])
@@ -62,7 +61,7 @@ func CheckConfirmationCode(passphrase, code string) error {
 
 	decryptor, err := aes.NewCipher(dk[32:])
 	if nil != err {
-		return err
+		return "", err
 	}
 	//fmt.Println("4")
 
@@ -84,7 +83,7 @@ func CheckConfirmationCode(passphrase, code string) error {
 	curve := btcec.S256()
 	pubKey, err = btcec.ParsePubKey(B[:], curve)
 	if nil != err {
-		return err
+		return "", err
 	}
 	//fmt.Println("5")
 
@@ -99,16 +98,17 @@ func CheckConfirmationCode(passphrase, code string) error {
 	checksum := hash.DoubleSum([]byte(addr))
 
 	if !gobytes.Equal(checksum[:4], rawCode[1:5]) {
-		return errors.New("invalid confirmation code")
+		return "", errors.New("invalid confirmation code")
 	}
 
 	//fmt.Printf("hello world")
 
-	return nil
+	return addr, nil
 }
 
-func Confirm(flag byte, addrHash, ownerEntropy, b, derivedHalf1,
-	derivedHalf2 []byte) (string, error) {
+//func Confirm(flag byte, addrHash, ownerEntropy, b, derivedHalf1,
+func GenerateConfirmationCode(flag byte, addrHash, ownerEntropy, b,
+	derivedHalf1, derivedHalf2 []byte) (string, error) {
 	curve := btcec.S256()
 	Bx, By := curve.ScalarBaseMult(b)
 	pubKey := &btcec.PublicKey{X: Bx, Y: By}
