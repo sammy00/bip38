@@ -57,20 +57,24 @@ func Test_Encrypt(t *testing.T) {
 	for i, c := range testCases {
 		raw, _ := hex.DecodeString(c.unencryptedHex)
 
+		var compressed bool
 		switch c.mode {
 		case nonec.UncompressedNoECMultiply:
 			if wif := encoding.PrivateKeyToWIF(raw); wif != c.unencryptedWIF {
 				t.Fatalf("#%d invalid wif: got %s, expect %s", i, wif, c.unencryptedWIF)
 			}
+			compressed = false
 		case nonec.CompressedNoECMultiply:
 			if wif := encoding.PrivateKeyToWIFCompressed(
 				raw); wif != c.unencryptedWIF {
 				t.Fatalf("#%d invalid wif-compressed: got %s, expect %s", i, wif,
 					c.unencryptedWIF)
 			}
+			compressed = true
 		}
 
-		cipher, err := nonec.Encrypt(raw, c.passphrase, c.mode)
+		//cipher, err := nonec.Encrypt(raw, c.passphrase, c.mode)
+		cipher, err := nonec.Encrypt(raw, c.passphrase, compressed)
 		if nil != err {
 			t.Fatalf("#%d failed: unexpected error %v", i, err)
 		}

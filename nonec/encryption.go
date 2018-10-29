@@ -2,7 +2,6 @@ package nonec
 
 import (
 	"crypto/aes"
-	"errors"
 
 	"github.com/sammy00/bip38/bytes"
 	"github.com/sammy00/bip38/encoding"
@@ -14,21 +13,14 @@ import (
 
 // Encrypt encrypts the given private key byte sequence
 // with the given passphrase
-func Encrypt(data []byte, passphrase string, mode EncryptionMode) (
+func Encrypt(data []byte, passphrase string, compressed bool) (
 	string, error) {
 
 	var addrHash []byte
-	switch mode {
-	case UncompressedNoECMultiply:
-		addrHash = hash.AddressChecksum(data, false)
-	case CompressedNoECMultiply:
+	if compressed {
 		addrHash = hash.AddressChecksum(data, true)
-	case UncompressedECMultiply:
-		panic("not implemented")
-	case CompressedECMultiply:
-		panic("not implemented")
-	default:
-		return "", errors.New("not implemented")
+	} else {
+		addrHash = hash.AddressChecksum(data, false)
 	}
 
 	dk, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)),
@@ -38,11 +30,10 @@ func Encrypt(data []byte, passphrase string, mode EncryptionMode) (
 	}
 
 	var payload [37]byte
-	//var flag [1]byte
-	if UncompressedNoECMultiply == mode {
-		payload[0] = Uncompressed
-	} else {
+	if compressed {
 		payload[0] = Compressed
+	} else {
+		payload[0] = Uncompressed
 	}
 	copy(payload[1:], addrHash) // append salt
 
@@ -59,16 +50,3 @@ func Encrypt(data []byte, passphrase string, mode EncryptionMode) (
 
 	return encoding.CheckEncode(Version, payload[:]), nil
 }
-
-/*
-// xor calculates the (x[0]^y[0], x[1]^y[1],..., x[32]^y[32])
-func xor(x, y []byte) []byte {
-	var out [32]byte
-	for i := range out {
-		out[i] = x[i] ^ y[i]
-	}
-
-	return out[:]
-}
-
-*/
