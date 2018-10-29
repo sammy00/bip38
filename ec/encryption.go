@@ -14,20 +14,21 @@ import (
 	"github.com/sammy00/bip38/hash"
 )
 
-//func Encrypt(rand io.Reader, data []byte, passphraseEx string,
+// Encrypt derives an encrypted private key from the given passphrase code and
+// return the resultant encrypted private key and confirmation code
 func Encrypt(rand io.Reader, passphraseEx string,
-	compressed bool) (string, error) {
+	compressed bool) (string, string, error) {
 
 	var seedb [24]byte
 	if _, err := rand.Read(seedb[:]); nil != err {
-		return "", err
+		return "", "", err
 	}
 
 	b := hash.DoubleSum(seedb[:])
 
 	magic, payload, err := encoding.CheckDecode(passphraseEx, MagicLen)
 	if nil != err {
-		return "", err
+		return "", "", err
 	}
 
 	//fmt.Printf("magic=%x\n", magic)
@@ -37,7 +38,7 @@ func Encrypt(rand io.Reader, passphraseEx string,
 	curve := btcec.S256()
 	pubKey, err := btcec.ParsePubKey(payload[8:], curve)
 	if nil != err {
-		return "", err
+		return "", "", err
 	}
 	pubKey.X, pubKey.Y = curve.ScalarMult(pubKey.X, pubKey.Y, b)
 
@@ -60,7 +61,7 @@ func Encrypt(rand io.Reader, passphraseEx string,
 	//fmt.Printf("pass=%x\n", payload[8:])
 	dk, err := scrypt.Key(payload[8:], salt, n2, r2, p2, keyLen2)
 	if nil != err {
-		return "", err
+		return "", "", err
 	}
 	//fmt.Printf("dk1=%x\n", dk[:32])
 	//fmt.Printf("dk2=%x\n", dk[32:])
@@ -68,7 +69,7 @@ func Encrypt(rand io.Reader, passphraseEx string,
 
 	encryptor, err := aes.NewCipher(dk[32:])
 	if nil != err {
-		return "", err
+		return "", "", err
 	}
 
 	var block, encryptedPart1, encryptedPart2 [16]byte
@@ -130,8 +131,14 @@ func Encrypt(rand io.Reader, passphraseEx string,
 	fmt.Println("},")
 	*/
 
+	code, err := GenerateConfirmationCode(flag, addrHash, payload[:8], b,
+		dk[:32], dk[32:])
+	if nil != err {
+		return "", "", err
+	}
+
 	//return encoding.CheckEncode(version, out), nil
-	return encoding.CheckEncode(Version, out), nil
+	return encoding.CheckEncode(Version, out), code, nil
 }
 
 ///*

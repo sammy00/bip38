@@ -148,5 +148,3 @@ func GenerateConfirmationCode(flag byte, addrHash, ownerEntropy, b,
 
 	return encoding.CheckEncode(confirmationMagicCode, payload), nil
 }
-
-// salt: ok
