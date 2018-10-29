@@ -4,6 +4,7 @@ import (
 	"crypto/aes"
 	"errors"
 
+	"github.com/sammy00/bip38/bytes"
 	"github.com/sammy00/bip38/encoding"
 	"github.com/sammy00/bip38/hash"
 	"golang.org/x/text/unicode/norm"
@@ -50,13 +51,16 @@ func Encrypt(data []byte, passphrase string, mode EncryptionMode) (
 		return "", err
 	}
 
-	block := xor(data, dk[:32])
+	var block [32]byte
+	//block := xor(data, dk[:32])
+	bytes.XOR(block[:], data, dk[:32])
 	C.Encrypt(payload[5:], block[:16])
 	C.Encrypt(payload[21:], block[16:])
 
 	return encoding.CheckEncode(Version, payload[:]), nil
 }
 
+/*
 // xor calculates the (x[0]^y[0], x[1]^y[1],..., x[32]^y[32])
 func xor(x, y []byte) []byte {
 	var out [32]byte
@@ -66,3 +70,5 @@ func xor(x, y []byte) []byte {
 
 	return out[:]
 }
+
+*/
