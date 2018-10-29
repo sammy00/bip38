@@ -1,41 +1,32 @@
 package ec
 
-// params for SCRYPT
+// Parameters configuration for SCRYPT
 const (
-	n1, n2           = 16384, 1024
-	r1, r2           = 8, 1
-	p1, p2           = 8, 1
-	keyLen1, keyLen2 = 32, 64
+	N1      = 16384
+	N2      = 1024
+	R1      = 8
+	R2      = 1
+	P1      = 8
+	P2      = 1
+	KeyLen1 = 32
+	KeyLen2 = 64
 )
 
-// MagicLen is the length of magic bytes to encode the intermediate
-// passphrase string
-const MagicLen = 8
-
-var (
-	withLotSequence = [8]byte{0x2C, 0xE9, 0xB3, 0xE1, 0xFF, 0x39, 0xE2, 0x51}
-	noLotSequence   = [8]byte{0x2C, 0xE9, 0xB3, 0xE1, 0xFF, 0x39, 0xE2, 0x53}
-)
-
-/*
-// VersionLen is the length of version prefix prepended to the payload
-const VersionLenOld = 3
-
-var (
-	CompressedNoLotSequence     = [VersionLenOld]byte{0x01, 0x43, 0x20}
-	CompressedWithLotSequence   = [VersionLenOld]byte{0x01, 0x43, 0x24}
-	UncompressedNoLotSequence   = [VersionLenOld]byte{0x01, 0x43, 0x00}
-	UncompressedWithLotSequence = [VersionLenOld]byte{0x01, 0x43, 0x04}
-)
-*/
-
+// VersionLen is length of version prefix for encrypting private key
+// according to EC-Multiply mode
 const VersionLen = 2
 
-var (
-	Version = []byte{0x01, 0x43}
-)
+// Version is the object identifier prefix for EC-Multiply encryption mode
+var Version = []byte{0x01, 0x43}
 
+// flag bits
 const (
-	Compressed, Uncompressed       = 0x20, 0x00
-	NoLotSequence, WithLotSequence = 0x00, 0x04
+	// Compressed denotes the public key is in compressed form
+	Compressed = 0x20
+	// Uncompressed denotes the public key is in uncompressed form
+	Uncompressed = 0x00
+	// NoLotSequence is employed when no lot number or sequence number is included
+	NoLotSequence = 0x00
+	// WithLotSequence is the opposite to NoLotSequence
+	WithLotSequence = 0x04
 )

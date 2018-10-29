@@ -40,7 +40,7 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	//fmt.Printf("addrHash=%x\n", addrHash)
 
 	pass, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerSalt,
-		n1, r1, p1, keyLen1)
+		N1, R1, P1, KeyLen1)
 	if nil != err {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	passPoint := pub.SerializeCompressed()
 
 	salt := append(addrHash, ownerEntropy...)
-	dk, err := scrypt.Key(passPoint, salt, n2, r2, p2, keyLen2)
+	dk, err := scrypt.Key(passPoint, salt, N2, R2, P2, KeyLen2)
 	if nil != err {
 		return nil, err
 	}

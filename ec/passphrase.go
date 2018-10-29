@@ -21,7 +21,7 @@ func EncryptPassphrase(rand io.Reader, passphrase string) (
 
 	// ownerSalt=ownerEntropy, and pre->pass conversion if omitted
 	pass, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerEntropy[:],
-		n1, r1, p1, keyLen1)
+		N1, R1, P1, KeyLen1)
 	if nil != err {
 		return "", err
 	}
@@ -49,7 +49,7 @@ func EncryptPassphraseX(rand io.Reader, passphrase string,
 	//fmt.Printf("ownerEntropy=%x\n", ownerEntropy[:])
 
 	pre, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerEntropy[:4],
-		n1, r1, p1, keyLen1)
+		N1, R1, P1, KeyLen1)
 	if nil != err {
 		return "", err
 	}

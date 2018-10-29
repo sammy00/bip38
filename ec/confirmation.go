@@ -38,7 +38,7 @@ func RecoverAddress(passphrase, code string) (string, error) {
 	//fmt.Printf("passphrase=%s\n", passphrase)
 	//fmt.Printf("ownerEntropy=%x\n", ownerEntropy)
 	pass, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerSalt,
-		n1, r1, p1, keyLen1)
+		N1, R1, P1, KeyLen1)
 	if nil != err {
 		return "", err
 	}
@@ -55,7 +55,7 @@ func RecoverAddress(passphrase, code string) (string, error) {
 	//fmt.Printf("pass=%x\n", pass)
 
 	// addrHash|ownerEntropy=rawCode[1:13]
-	dk, err := scrypt.Key(passPoint, rawCode[1:13], n2, r2, p2, keyLen2)
+	dk, err := scrypt.Key(passPoint, rawCode[1:13], N2, R2, P2, KeyLen2)
 	if nil != err {
 		return "", err
 	}

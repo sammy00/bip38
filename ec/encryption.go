@@ -59,7 +59,7 @@ func Encrypt(rand io.Reader, passphraseEx string,
 	//fmt.Printf("ownerEntropy=%x\n", payload[:8])
 	//fmt.Printf("salt=%x\n", salt)
 	//fmt.Printf("pass=%x\n", payload[8:])
-	dk, err := scrypt.Key(payload[8:], salt, n2, r2, p2, keyLen2)
+	dk, err := scrypt.Key(payload[8:], salt, N2, R2, P2, KeyLen2)
 	if nil != err {
 		return "", "", err
 	}
