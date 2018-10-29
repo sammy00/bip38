@@ -1,4 +1,4 @@
-package bip38
+package nonec
 
 // params for SCRYPT
 const (

@@ -1,4 +1,4 @@
-package bip38
+package nonec
 
 import (
 	"github.com/btcsuite/btcd/btcec"

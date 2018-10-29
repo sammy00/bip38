@@ -1,4 +1,4 @@
-package bip38
+package nonec
 
 // EncryptionMode denotes a mode to encrypting private key
 type EncryptionMode uint8
