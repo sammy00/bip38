@@ -1,5 +1,6 @@
 package nonec
 
+/*
 // EncryptionMode denotes a mode to encrypting private key
 type EncryptionMode uint8
 
@@ -13,10 +14,11 @@ const (
 )
 
 const versionLen = 3
+*/
 
 // versions specifies the set of version prefix to employ for
 // different encryption mode
-var versions [][versionLen]byte
+//var versions [][versionLen]byte
 
 const VersionLen = 2
 
@@ -27,6 +29,7 @@ const (
 	Uncompressed = 0xc0
 )
 
+/*
 func init() {
 	versions = [][versionLen]byte{
 		{}, // reserved
@@ -36,3 +39,4 @@ func init() {
 		{0x01, 0x43, 0x20},
 	}
 }
+*/

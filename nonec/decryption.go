@@ -18,12 +18,7 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 		return nil, err
 	}
 
-	var mode EncryptionMode
-	if Compressed == payload[0] {
-		mode = CompressedNoECMultiply
-	} else {
-		mode = UncompressedNoECMultiply
-	}
+	flag := payload[0]
 	payload = payload[1:] // trim out flag
 
 	dk, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)),
@@ -44,17 +39,18 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	var priv [32]byte
 	bytes.XOR(priv[:], plain[:], dk[:32])
 
-	switch mode {
-	case UncompressedNoECMultiply, UncompressedECMultiply:
-		if !gobytes.Equal(payload[:4], hash.AddressChecksum(priv[:], false)) {
-			err = errors.New("invalid address hash")
-		}
-	case CompressedNoECMultiply, CompressedECMultiply:
+	switch flag {
+	case Compressed:
 		if !gobytes.Equal(payload[:4], hash.AddressChecksum(priv[:], true)) {
 			err = errors.New("invalid address hash")
 		}
+	case Uncompressed:
+		if !gobytes.Equal(payload[:4], hash.AddressChecksum(priv[:], false)) {
+			err = errors.New("invalid address hash")
+		}
 	default:
+		err = errors.New("invalid flag")
 	}
 
-	return priv[:], nil
+	return priv[:], err
 }
