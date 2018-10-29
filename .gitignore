@@ -13,3 +13,6 @@
 
 # vendor
 vendor/
+
+# coverage 
+*.cov
