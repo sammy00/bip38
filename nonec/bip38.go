@@ -5,6 +5,7 @@ import (
 	"crypto/aes"
 	"errors"
 
+	"github.com/sammy00/bip38/hash"
 	"golang.org/x/text/unicode/norm"
 
 	"golang.org/x/crypto/scrypt"
@@ -36,11 +37,11 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 
 	switch mode {
 	case UncompressedNoECMultiply, UncompressedECMultiply:
-		if !bytes.Equal(payload[:4], AddressHash(priv, false)) {
+		if !bytes.Equal(payload[:4], hash.AddressChecksum(priv, false)) {
 			err = errors.New("invalid address hash")
 		}
 	case CompressedNoECMultiply, CompressedECMultiply:
-		if !bytes.Equal(payload[:4], AddressHash(priv, true)) {
+		if !bytes.Equal(payload[:4], hash.AddressChecksum(priv, true)) {
 			err = errors.New("invalid address hash")
 		}
 	default:
@@ -57,9 +58,9 @@ func Encrypt(data []byte, passphrase string, mode EncryptionMode) (
 	var addrHash []byte
 	switch mode {
 	case UncompressedNoECMultiply:
-		addrHash = AddressHash(data, false)
+		addrHash = hash.AddressChecksum(data, false)
 	case CompressedNoECMultiply:
-		addrHash = AddressHash(data, true)
+		addrHash = hash.AddressChecksum(data, true)
 	case UncompressedECMultiply:
 		panic("not implemented")
 	case CompressedECMultiply:
