@@ -7,6 +7,8 @@ import (
 	"golang.org/x/crypto/ripemd160"
 )
 
+// PublicKeyToAddress converts the public key stream into
+// the corresponding base58-encoded address
 func PublicKeyToAddress(pub []byte) string {
 	data := sha256.Sum256(pub)
 
