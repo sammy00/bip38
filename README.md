@@ -6,4 +6,5 @@
 [![LICENSE](https://img.shields.io/badge/license-ISC-blue.svg)](LICENSE)  
 
 ## References  
++ [bitcoin/bips/bip-0038](https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki)  
 + [bitcoinjs/bip38](https://github.com/bitcoinjs/bip38)  

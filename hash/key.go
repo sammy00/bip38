@@ -1,18 +1,20 @@
 package hash
 
 import (
-	"github.com/SHDMT/btcec"
+	"github.com/btcsuite/btcd/btcec"
 	"github.com/sammy00/bip38/encoding"
 )
 
 func AddressChecksum(priv []byte, compressed bool) []byte {
-	privKey, _ := btcec.PrivKeyFromBytes(btcec.S256(), priv)
+	//privKey, _ := btcec.PrivKeyFromBytes(btcec.S256(), priv)
+	_, pubKey := btcec.PrivKeyFromBytes(btcec.S256(), priv)
 
 	var pub []byte
 	if compressed {
-		pub = privKey.PubKey().SerializeCompressed()
+		//pub = privKey.PubKey().SerializeCompressed()
+		pub = pubKey.SerializeCompressed()
 	} else {
-		pub = privKey.PubKey().SerializeUncompressed()
+		pub = pubKey.SerializeUncompressed()
 	}
 
 	addr := encoding.PublicKeyToAddress(pub)
