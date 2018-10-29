@@ -6,17 +6,25 @@ import (
 	"errors"
 
 	"github.com/sammy00/bip38/bytes"
+	"github.com/sammy00/bip38/encoding"
 	"github.com/sammy00/bip38/hash"
 	"golang.org/x/crypto/scrypt"
 	"golang.org/x/text/unicode/norm"
 )
 
 func Decrypt(encrypted string, passphrase string) ([]byte, error) {
-	// TODO: distinguish decoding routine based on version
-	payload, mode, err := CheckDecode(encrypted)
+	_, payload, err := encoding.CheckDecode(encrypted, VersionLen)
 	if nil != err {
 		return nil, err
 	}
+
+	var mode EncryptionMode
+	if Compressed == payload[0] {
+		mode = CompressedNoECMultiply
+	} else {
+		mode = UncompressedNoECMultiply
+	}
+	payload = payload[1:] // trim out flag
 
 	dk, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)),
 		payload[:4], n, r, p, keyLen)
