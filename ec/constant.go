@@ -17,6 +17,7 @@ var (
 	noLotSequence   = [8]byte{0x2C, 0xE9, 0xB3, 0xE1, 0xFF, 0x39, 0xE2, 0x53}
 )
 
+/*
 // VersionLen is the length of version prefix prepended to the payload
 const VersionLenOld = 3
 
@@ -26,6 +27,7 @@ var (
 	UncompressedNoLotSequence   = [VersionLenOld]byte{0x01, 0x43, 0x00}
 	UncompressedWithLotSequence = [VersionLenOld]byte{0x01, 0x43, 0x04}
 )
+*/
 
 const VersionLen = 2
 
