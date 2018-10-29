@@ -2,6 +2,7 @@ package ec
 
 import (
 	"crypto/aes"
+	"fmt"
 	"io"
 
 	"github.com/btcsuite/btcd/btcec"
@@ -109,12 +110,13 @@ func Encrypt(rand io.Reader, data []byte, passphraseEx string,
 	hexify(b)
 	hexify(dk[:32])
 	hexify(dk[32:])
-	fmt.Println("},")*/
+	fmt.Println("},")
+	*/
 
 	return encoding.CheckEncode(version, out), nil
 }
 
-/*
+///*
 func hexify(data []byte) {
 	fmt.Printf("[]byte{")
 	for _, v := range data {
@@ -122,4 +124,5 @@ func hexify(data []byte) {
 	}
 	fmt.Println("},")
 }
-*/
+
+//*/

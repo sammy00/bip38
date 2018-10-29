@@ -21,16 +21,24 @@ var (
 )
 
 func CheckConfirmationCode(passphrase, code string) error {
-	_, rawCode, err := encoding.CheckDecode(code, 5)
+	_, rawCode, err := encoding.CheckDecode(code, confirmationMagicLen)
 	if nil != err || len(rawCode) != 46 {
 		fmt.Println("1", len(rawCode))
 		return err
 	}
 
 	ownerEntropy := rawCode[5:13]
+
+	var ownerSalt []byte
+	flag := rawCode[0]
+	if 0 != flag&0x04 {
+		ownerSalt = ownerEntropy[:4]
+	} else {
+		ownerSalt = ownerEntropy
+	}
 	//fmt.Printf("passphrase=%s\n", passphrase)
 	//fmt.Printf("ownerEntropy=%x\n", ownerEntropy)
-	pass, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerEntropy[:],
+	pass, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerSalt,
 		n1, r1, p1, keyLen1)
 	if nil != err {
 		return err
