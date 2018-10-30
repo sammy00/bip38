@@ -19,13 +19,12 @@ func EncryptPassphrase(rand io.Reader, passphrase string) (
 		return "", err
 	}
 
-	// ownerSalt=ownerEntropy, and pre->pass conversion if omitted
+	// ownerSalt=ownerEntropy, and pre->pass conversion is omitted
 	pass, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerEntropy[:],
 		N1, R1, P1, KeyLen1)
 	if nil != err {
 		return "", err
 	}
-	//fmt.Printf("pass=% x\n", pass)
 
 	_, pub := btcec.PrivKeyFromBytes(btcec.S256(), pass)
 	passPoint := pub.SerializeCompressed()
