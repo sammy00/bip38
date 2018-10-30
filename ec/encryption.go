@@ -2,7 +2,6 @@ package ec
 
 import (
 	"crypto/aes"
-	"fmt"
 	"io"
 
 	"github.com/btcsuite/btcd/btcec"
@@ -82,23 +81,6 @@ func Encrypt(rand io.Reader, passphraseEx string,
 	bytes.XOR(block[:], block[:], dk[16:32])
 	encryptor.Encrypt(encryptedPart2[:], block[:])
 
-	/*
-		var version []byte
-		if compressed {
-			if 0x53 == magic[MagicLen-1] {
-				version = CompressedNoLotSequence[:]
-			} else {
-				version = CompressedWithLotSequence[:]
-			}
-		} else {
-			if 0x53 == magic[MagicLen-1] {
-				version = UncompressedNoLotSequence[:]
-			} else {
-				version = UncompressedWithLotSequence[:]
-			}
-		}
-	*/
-
 	var flag byte
 	if compressed {
 		flag |= Compressed
@@ -111,7 +93,6 @@ func Encrypt(rand io.Reader, passphraseEx string,
 		flag |= NoLotSequence
 	}
 
-	//out := make([]byte, 0, 39-VersionLenOld)
 	out := make([]byte, 0, 39-VersionLen)
 	out = append(out, flag)
 	out = append(out, addrHash...)
@@ -137,12 +118,11 @@ func Encrypt(rand io.Reader, passphraseEx string,
 		return "", "", err
 	}
 
-	//return encoding.CheckEncode(version, out), nil
 	return encoding.CheckEncode(Version, out), code, nil
 }
 
-///*
-func hexify(data []byte) {
+/*
+func hexlify(data []byte) {
 	fmt.Printf("[]byte{")
 	for _, v := range data {
 		fmt.Printf("0x%02x,", v)
@@ -150,4 +130,4 @@ func hexify(data []byte) {
 	fmt.Println("},")
 }
 
-//*/
+*/

@@ -14,8 +14,39 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
+// GenerateConfirmationCode derives the corresponding confirmation code
+// based on the intermediate information during private key encryption
+func GenerateConfirmationCode(flag byte, addrHash, ownerEntropy, b,
+	derivedHalf1, derivedHalf2 []byte) (string, error) {
+	curve := btcec.S256()
+	Bx, By := curve.ScalarBaseMult(b)
+	pubKey := &btcec.PublicKey{X: Bx, Y: By}
+	B := pubKey.SerializeCompressed()
+
+	var encrypted [33]byte
+	encrypted[0] = B[0] ^ (derivedHalf2[31] & 0x01)
+
+	encryptor, err := aes.NewCipher(derivedHalf2)
+	if nil != err {
+		return "", err
+	}
+
+	bytes.XOR(B[1:], B[1:], derivedHalf1)
+	encryptor.Encrypt(encrypted[1:17], B[1:17])
+	encryptor.Encrypt(encrypted[17:], B[17:])
+
+	payload := make([]byte, 1+4+8+33)
+	payload[0] = flag
+	copy(payload[1:], addrHash)
+	copy(payload[5:], ownerEntropy)
+	copy(payload[13:], encrypted[:])
+
+	return encoding.CheckEncode(ConfirmationMagicCode, payload), nil
+}
+
 // RecoverAddress recovers the generated address out of the given confirmation
 // code based on the given passphrase
+// TODO: output the lot number and sequence number
 func RecoverAddress(passphrase, code string) (string, error) {
 	_, rawCode, err := encoding.CheckDecode(code, ConfirmationMagicLen)
 	if nil != err {
@@ -74,7 +105,6 @@ func RecoverAddress(passphrase, code string) (string, error) {
 	if nil != err {
 		return "", err
 	}
-	//fmt.Println("5")
 
 	pubKey.X, pubKey.Y = curve.ScalarMult(pubKey.X, pubKey.Y, pass)
 	var pub []byte
@@ -91,42 +121,4 @@ func RecoverAddress(passphrase, code string) (string, error) {
 	}
 
 	return addr, nil
-}
-
-//func Confirm(flag byte, addrHash, ownerEntropy, b, derivedHalf1,
-func GenerateConfirmationCode(flag byte, addrHash, ownerEntropy, b,
-	derivedHalf1, derivedHalf2 []byte) (string, error) {
-	curve := btcec.S256()
-	Bx, By := curve.ScalarBaseMult(b)
-	pubKey := &btcec.PublicKey{X: Bx, Y: By}
-	B := pubKey.SerializeCompressed()
-
-	/*fmt.Printf("ownerEntropy=%x\n", ownerEntropy)
-	fmt.Printf("dk1=%x\n", derivedHalf1)
-	fmt.Printf("dk2=%x\n", derivedHalf2)
-	fmt.Printf("B0=%x\n", B)
-	*/
-
-	//fmt.Printf("pub %x\n", pub)
-	var encrypted [33]byte
-	encrypted[0] = B[0] ^ (derivedHalf2[31] & 0x01)
-	//fmt.Printf("e0=%x\n", encrypted[0])
-
-	encryptor, err := aes.NewCipher(derivedHalf2)
-	if nil != err {
-		return "", err
-	}
-
-	bytes.XOR(B[1:], B[1:], derivedHalf1)
-	encryptor.Encrypt(encrypted[1:17], B[1:17])
-	encryptor.Encrypt(encrypted[17:], B[17:])
-
-	payload := make([]byte, 1+4+8+33)
-	payload[0] = flag
-	copy(payload[1:], addrHash)
-	copy(payload[5:], ownerEntropy)
-	copy(payload[13:], encrypted[:])
-	//fmt.Printf("salt=%x%x\n", addrHash, ownerEntropy)
-
-	return encoding.CheckEncode(ConfirmationMagicCode, payload), nil
 }
