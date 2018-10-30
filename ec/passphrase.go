@@ -10,7 +10,8 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
-// EncryptPassphrase generates a intermediate passphrase from the given one.
+// EncryptPassphrase generates a intermediate passphrase code from the
+// given one provided by owner.
 func EncryptPassphrase(rand io.Reader, passphrase string) (
 	string, error) {
 
@@ -33,6 +34,9 @@ func EncryptPassphrase(rand io.Reader, passphrase string) (
 		noLotSequence[:], append(ownerEntropy[:], passPoint...)), nil
 }
 
+// EncryptPassphraseX works similarly to EncryptPassphrase, except that
+// the ownerEntropy consists of 4 byte owner salt and 4 byte buffer encoded
+// from the lot number and the sequence number.
 func EncryptPassphraseX(rand io.Reader, passphrase string,
 	lot, sequence uint32) (string, error) {
 	var ownerEntropy [8]byte
@@ -44,8 +48,6 @@ func EncryptPassphraseX(rand io.Reader, passphrase string,
 	ownerEntropy[5] = byte(lot >> 4 & 0xff)
 	ownerEntropy[6] = byte((lot << 4 & 0xf0) | (sequence >> 8 & 0x0f))
 	ownerEntropy[7] = byte(sequence & 0xff)
-
-	//fmt.Printf("ownerEntropy=%x\n", ownerEntropy[:])
 
 	pre, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerEntropy[:4],
 		N1, R1, P1, KeyLen1)

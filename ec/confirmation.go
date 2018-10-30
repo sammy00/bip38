@@ -45,8 +45,9 @@ func GenerateConfirmationCode(flag byte, addrHash, ownerEntropy, b,
 }
 
 // RecoverAddress recovers the generated address out of the given confirmation
-// code based on the given passphrase
-// TODO: output the lot number and sequence number
+// code based on the given passphrase. If applicable, the corresponding lot and
+// sequence number can be recovered from this passphrase code using
+// LotSequenceFromConfirmationCode function.
 func RecoverAddress(passphrase, code string) (string, error) {
 	_, rawCode, err := encoding.CheckDecode(code, ConfirmationMagicLen)
 	if nil != err {

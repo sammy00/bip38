@@ -5,6 +5,8 @@ import (
 	"github.com/sammy00/bip38/encoding"
 )
 
+// DecodeLotSequence decodes the lot and sequence numbers out of the given byte
+// sequence. The first 4 bytes of lotSequence would be employed for decoding.
 func DecodeLotSequence(lotSequence []byte) (uint32, uint32) {
 	lot := uint32(lotSequence[0]) << 12
 	lot |= uint32(lotSequence[1]) << 4
@@ -16,6 +18,9 @@ func DecodeLotSequence(lotSequence []byte) (uint32, uint32) {
 	return lot, sequence
 }
 
+// EncodeLotSequence encodes the lot and sequence numbers into the given
+// lotSequence buffer. And the first 32 bits consist of the least significant
+// 20 bits of lot following by the 12 bits of sequence.
 func EncodeLotSequence(lotSequence []byte, lot, sequence uint32) {
 	lotSequence[0] = byte(lot >> 12 & 0xff)
 	lotSequence[1] = byte(lot >> 4 & 0xff)
@@ -23,6 +28,8 @@ func EncodeLotSequence(lotSequence []byte, lot, sequence uint32) {
 	lotSequence[3] = byte(sequence & 0xff)
 }
 
+// LotSequenceFromConfirmationCode decodes the lot number and sequence number
+// out of the given passphrase code.
 func LotSequenceFromConfirmationCode(code string) (uint32, uint32, error) {
 	_, rawCode, err := encoding.CheckDecode(code, ConfirmationMagicLen)
 	// TODO: ??magic bytes checking
@@ -40,6 +47,8 @@ func LotSequenceFromConfirmationCode(code string) (uint32, uint32, error) {
 	return lot, seq, nil
 }
 
+// LotSequenceFromEncryptedKey decodes the lot number and sequence number
+// out of the given encrypted private key.
 func LotSequenceFromEncryptedKey(encrypted string) (uint32, uint32, error) {
 	_, priv, err := encoding.CheckDecode(encrypted, VersionLen)
 	// TODO: ??magic bytes checking

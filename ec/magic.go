@@ -1,7 +1,7 @@
 package ec
 
 // ConfirmationMagicLen is the length of magic bytes to encode the confirmation
-// returning to owner from the generator
+// code returning to owner from the generator
 const ConfirmationMagicLen = 5
 
 // MagicLen is the length of magic bytes to encode the intermediate

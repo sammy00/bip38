@@ -30,10 +30,6 @@ func Encrypt(rand io.Reader, passphraseEx string,
 		return "", "", err
 	}
 
-	//fmt.Printf("magic=%x\n", magic)
-	//if 0x51 magic[MagicLen-1]
-
-	//btcec.PublicKey
 	curve := btcec.S256()
 	pubKey, err := btcec.ParsePubKey(payload[8:], curve)
 	if nil != err {
@@ -55,16 +51,10 @@ func Encrypt(rand io.Reader, passphraseEx string,
 	// ownerEntropy=payload[:8]
 	// passPoint=payload[8:]
 	salt := append(addrHash, payload[:8]...)
-	//fmt.Printf("ownerEntropy=%x\n", payload[:8])
-	//fmt.Printf("salt=%x\n", salt)
-	//fmt.Printf("pass=%x\n", payload[8:])
 	dk, err := scrypt.Key(payload[8:], salt, N2, R2, P2, KeyLen2)
 	if nil != err {
 		return "", "", err
 	}
-	//fmt.Printf("dk1=%x\n", dk[:32])
-	//fmt.Printf("dk2=%x\n", dk[32:])
-	//fmt.Printf("dk=%x\n", dk)
 
 	encryptor, err := aes.NewCipher(dk[32:])
 	if nil != err {
@@ -100,18 +90,6 @@ func Encrypt(rand io.Reader, passphraseEx string,
 	out = append(out, encryptedPart1[:8]...)
 	out = append(out, encryptedPart2[:]...)
 
-	//fmt.Printf("flag")
-	//fmt.Printf("addrHash")
-	/*fmt.Println("{")
-	fmt.Printf("0x%02x,\n", version[VersionLenOld-1])
-	hexify(addrHash)
-	hexify(payload[:8])
-	hexify(b)
-	hexify(dk[:32])
-	hexify(dk[32:])
-	fmt.Println("},")
-	*/
-
 	code, err := GenerateConfirmationCode(flag, addrHash, payload[:8], b,
 		dk[:32], dk[32:])
 	if nil != err {
@@ -120,14 +98,3 @@ func Encrypt(rand io.Reader, passphraseEx string,
 
 	return encoding.CheckEncode(Version, out), code, nil
 }
-
-/*
-func hexlify(data []byte) {
-	fmt.Printf("[]byte{")
-	for _, v := range data {
-		fmt.Printf("0x%02x,", v)
-	}
-	fmt.Println("},")
-}
-
-*/

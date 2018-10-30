@@ -16,18 +16,17 @@ import (
 	"github.com/sammy00/bip38/hash"
 )
 
+// Decrypt decrypts the derived private key out of the base58-encoded
+// encrypted string based on the owner's passphrase. And if applicable,
+// the corresponding lot and sequence number can be recovered using
+// the LotSequenceFromEncryptedKey function.
 func Decrypt(encrypted string, passphrase string) ([]byte, error) {
-	//version, payload, err := encoding.CheckDecode(encrypted, VersionLenOld)
 	_, payload, err := encoding.CheckDecode(encrypted, VersionLen)
 	if nil != err {
 		return nil, err
 	}
-	//fmt.Printf("%x\n", version)
-	//fmt.Printf("%x\n", payload)
-	//fmt.Println(len(payload))
 
 	var ownerSalt []byte
-	//flag := version[VersionLenOld-1]
 	flag := payload[0]
 	payload = payload[1:] // trim out flag byte
 	if 0 != flag&0x04 {
@@ -37,7 +36,6 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	}
 
 	addrHash, ownerEntropy := payload[:4], payload[4:12]
-	//fmt.Printf("addrHash=%x\n", addrHash)
 
 	pass, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerSalt,
 		N1, R1, P1, KeyLen1)
@@ -57,7 +55,6 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	if nil != err {
 		return nil, err
 	}
-	//fmt.Printf("dk=%x\n", dk)
 
 	decryptor, err := aes.NewCipher(dk[32:])
 	if nil != err {
@@ -76,11 +73,6 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	encryptedPart1 := append(payload[12:20], out[:8]...)
 	decryptor.Decrypt(out[:], encryptedPart1)
 	bytes.XOR(seedb[:16], out[:], dk[:16])
-
-	//for _, v := range seedb {
-	//	fmt.Printf("0x%02x,", v)
-	//}
-	//fmt.Println()
 
 	b := hash.DoubleSum(seedb[:])
 
