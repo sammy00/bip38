@@ -20,7 +20,7 @@ func TestEncrypt(t *testing.T) {
 		compressed     bool
 		expect         expect
 	}{
-		{
+		{ // no lot/sequence
 			&EntropyReader{
 				Stream: []byte{
 					0x99, 0x24, 0x1d, 0x58, 0x24, 0x5c, 0x88, 0x38,
@@ -36,7 +36,7 @@ func TestEncrypt(t *testing.T) {
 				false,
 			},
 		},
-		{
+		{ // no lot/sequence
 			&EntropyReader{
 				Stream: []byte{
 					0x49, 0x11, 0x1e, 0x30, 0x1d, 0x94, 0xea, 0xb3,

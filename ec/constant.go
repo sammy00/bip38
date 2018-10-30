@@ -28,6 +28,10 @@ const (
 // and the magic prefix
 const RawConfirmationCodeLen = 1 + 4 + 8 + 33
 
+// RawEncryptedKeyLen is the length of encrypted private key without base58
+// encoding and trimming out the version prefix
+const RawEncryptedKeyLen = 1 + 4 + 8 + 8 + 16
+
 // VersionLen is length of version prefix for encrypting private key
 // according to EC-Multiply mode
 const VersionLen = 2
