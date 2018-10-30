@@ -24,10 +24,14 @@ func RecoverAddress(passphrase, code string) (string, error) {
 		return "", errors.Errorf("invalid code length: %d", len(rawCode))
 	}
 
-	flag, ownerEntropy := rawCode[0], rawCode[5:13]
+	// rawCode=flag(1)|addressHash(4)|ownerEntropy(8)|encryptedB(33)
+	flag, addrHash, ownerEntropy := rawCode[0], rawCode[1:5], rawCode[5:13]
+	encryptedB := rawCode[13:]
 
 	var ownerSalt []byte
 	if 0 != flag&0x04 {
+		// 0x04 bit on indicates the inclusion of lot-sequence,
+		// which will make the first 4 bytes as salt for 1st round scrypt
 		ownerSalt = ownerEntropy[:4]
 	} else {
 		ownerSalt = ownerEntropy
@@ -43,45 +47,29 @@ func RecoverAddress(passphrase, code string) (string, error) {
 		pass = hash.DoubleSum(append(pass, ownerEntropy[:]...))
 	}
 
-	//fmt.Println("2")
-	//fmt.Printf("pass=%x\n", pass)
+	curve := btcec.S256()
 	var pubKey *btcec.PublicKey
-	_, pubKey = btcec.PrivKeyFromBytes(btcec.S256(), pass)
+	_, pubKey = btcec.PrivKeyFromBytes(curve, pass)
 	passPoint := pubKey.SerializeCompressed()
-	//fmt.Printf("pass=%x\n", pass)
 
 	// addrHash|ownerEntropy=rawCode[1:13]
 	dk, err := scrypt.Key(passPoint, rawCode[1:13], N2, R2, P2, KeyLen2)
 	if nil != err {
 		return "", err
 	}
-	//fmt.Printf("salt=%x\n", rawCode[1:13])
-	//fmt.Printf("dk1=%x\n", dk[:32])
-	//fmt.Printf("dk2=%x\n", dk[32:])
-	//fmt.Println("3")
 
 	decryptor, err := aes.NewCipher(dk[32:])
 	if nil != err {
 		return "", err
 	}
-	//fmt.Println("4")
 
 	var B [33]byte
 
-	offset := 13
-	B[0] = rawCode[offset] ^ (dk[63] & 0x01)
-
-	offset++
-	decryptor.Decrypt(B[1:17], rawCode[offset:offset+16])
-
-	offset += 16
-	decryptor.Decrypt(B[17:], rawCode[offset:])
+	B[0] = encryptedB[0] ^ (dk[63] & 0x01)
+	decryptor.Decrypt(B[1:17], encryptedB[1:17])
+	decryptor.Decrypt(B[17:], encryptedB[17:])
 	bytes.XOR(B[1:], B[1:], dk[:32])
 
-	//fmt.Printf("B1=%x\n", B)
-	//fmt.Printf("e1=%x\n", rawCode[13])
-
-	curve := btcec.S256()
 	pubKey, err = btcec.ParsePubKey(B[:], curve)
 	if nil != err {
 		return "", err
@@ -90,7 +78,7 @@ func RecoverAddress(passphrase, code string) (string, error) {
 
 	pubKey.X, pubKey.Y = curve.ScalarMult(pubKey.X, pubKey.Y, pass)
 	var pub []byte
-	if 0 != rawCode[0]&0x20 {
+	if 0 != flag&0x20 {
 		pub = pubKey.SerializeCompressed()
 	} else {
 		pub = pubKey.SerializeUncompressed()
@@ -98,11 +86,9 @@ func RecoverAddress(passphrase, code string) (string, error) {
 	addr := encoding.PublicKeyToAddress(pub)
 	checksum := hash.DoubleSum([]byte(addr))
 
-	if !gobytes.Equal(checksum[:4], rawCode[1:5]) {
+	if !gobytes.Equal(checksum[:4], addrHash) {
 		return "", errors.New("invalid confirmation code")
 	}
-
-	//fmt.Printf("hello world")
 
 	return addr, nil
 }

@@ -158,13 +158,33 @@ func TestRecoverAddress(t *testing.T) {
 			"1Lurmih3KruL4xDB5FmHof38yawNtP9oGf",
 			false,
 		},
+		{ // invalid base58 checksum
+			"TestingOneTwoThree",
+			"cfrm38V5UPS5Aik2Z91tWbgNUTDmL4uKyUF4CX7wATVikgxRfg9tjCT7Mdon16uVeWCJqjnFGtt",
+			"",
+			true,
+		},
+		{ // invalid code length
+			"TestingOneTwoThree",
+			"passphrasepxFy57B9v8HtUsszJYKReoNDV6VHjUSGt8EVJmux9n1J3Ltf1gRxyDGXqnf9qm",
+			"",
+			true,
+		},
+		{ // invalid pointprefix
+			"TestingOneTwoThree",
+			"cfrm38V5UPS5Aik2Z91tWbgNUMPXoNZERCDNo4NpSiditjA6vLJjn5vUzibTGeqofYB9MsZmCz9",
+			"",
+			true,
+		},
+		{ // invalid address hash
+			"TestingOneTwoThree",
+			"cfrm38V5UPS5Aik2Z91tWbgNURH29qTJ83Zq4hYEFssioNMekZYB5VcEZzjfkxDberBvM5pPV7A",
+			"",
+			true,
+		},
 	}
 
 	for i, c := range testCases {
-		//confirmationCode, _ := ec.GenerateConfirmationCode(c.flag, c.addrHash,
-		//	c.ownerEntropy, c.b, c.derivedHalf1, c.derivedHalf2)
-		//t.Log(confirmationCode)
-
 		got, err := ec.RecoverAddress(c.passphrase, c.confirmationCode)
 
 		if !c.expectErr && nil != err {
