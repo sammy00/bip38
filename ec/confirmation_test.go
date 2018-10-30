@@ -158,6 +158,12 @@ func TestRecoverAddress(t *testing.T) {
 			"1Lurmih3KruL4xDB5FmHof38yawNtP9oGf",
 			false,
 		},
+		{ // compressed form
+			"TestingOneTwoThree",
+			"cfrm38VUCLt2TQxAbVcZKYcZWx8cg4A8LjL9Fx1mL6zn7jJnAfeUYiJGrLsmU1pci4M3QEeeGc3",
+			"1AtJUNDEkPfgiAY88vRaZAs9ZCTmoX5UMh",
+			false,
+		},
 		{ // invalid base58 checksum
 			"TestingOneTwoThree",
 			"cfrm38V5UPS5Aik2Z91tWbgNUTDmL4uKyUF4CX7wATVikgxRfg9tjCT7Mdon16uVeWCJqjnFGtt",
