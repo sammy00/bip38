@@ -18,8 +18,7 @@ func Test_Decrypt(t *testing.T) {
 	testCases := []struct {
 		passphrase string
 		encrypted  string
-		//expect     string // the expected unencrypted key
-		expect expect
+		expect     expect
 	}{
 		{ // uncompressed
 			"TestingOneTwoThree",

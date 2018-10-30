@@ -13,6 +13,8 @@ import (
 	"golang.org/x/text/unicode/norm"
 )
 
+// Decrypt decodes the encrypted private key out of the encrypted cipher text
+// with the help of passphrase provided by owner.
 func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	_, payload, err := encoding.CheckDecode(encrypted, VersionLen)
 	if nil != err {
@@ -24,7 +26,6 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	// decompose payload into different parts
 	flag, addrHash := payload[0], payload[1:5]
 	encryptedHalf1, encryptedHalf2 := payload[5:21], payload[21:]
-	//payload = payload[1:] // trim out flag
 
 	dk, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)),
 		addrHash, N, R, P, KeyLen)

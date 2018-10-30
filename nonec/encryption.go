@@ -43,7 +43,6 @@ func Encrypt(data []byte, passphrase string, compressed bool) (
 	}
 
 	var block [32]byte
-	//block := xor(data, dk[:32])
 	bytes.XOR(block[:], data, dk[:32])
 	C.Encrypt(payload[5:], block[:16])
 	C.Encrypt(payload[21:], block[16:])
