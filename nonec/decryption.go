@@ -3,7 +3,8 @@ package nonec
 import (
 	gobytes "bytes"
 	"crypto/aes"
-	"errors"
+
+	"github.com/pkg/errors"
 
 	"github.com/sammy00/bip38/bytes"
 	"github.com/sammy00/bip38/encoding"
@@ -16,13 +17,17 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	_, payload, err := encoding.CheckDecode(encrypted, VersionLen)
 	if nil != err {
 		return nil, err
+	} else if len(payload) != RawEncryptedKeyLen {
+		return nil, errors.Errorf("invalid encrypted key length: %d", len(payload))
 	}
 
-	flag := payload[0]
-	payload = payload[1:] // trim out flag
+	// decompose payload into different parts
+	flag, addrHash := payload[0], payload[1:5]
+	encryptedHalf1, encryptedHalf2 := payload[5:21], payload[21:]
+	//payload = payload[1:] // trim out flag
 
 	dk, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)),
-		payload[:4], n, r, p, keyLen)
+		addrHash, N, R, P, KeyLen)
 	if nil != err {
 		return nil, err
 	}
@@ -32,20 +37,18 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 		return nil, err
 	}
 
-	var plain [32]byte
-	C.Decrypt(plain[:16], payload[4:20])
-	C.Decrypt(plain[16:], payload[20:])
-
 	var priv [32]byte
-	bytes.XOR(priv[:], plain[:], dk[:32])
+	C.Decrypt(priv[:16], encryptedHalf1)
+	C.Decrypt(priv[16:], encryptedHalf2)
+	bytes.XOR(priv[:], priv[:], dk[:32])
 
 	switch flag {
 	case Compressed:
-		if !gobytes.Equal(payload[:4], hash.AddressChecksum(priv[:], true)) {
+		if !gobytes.Equal(addrHash, hash.AddressChecksum(priv[:], true)) {
 			err = errors.New("invalid address hash")
 		}
 	case Uncompressed:
-		if !gobytes.Equal(payload[:4], hash.AddressChecksum(priv[:], false)) {
+		if !gobytes.Equal(addrHash, hash.AddressChecksum(priv[:], false)) {
 			err = errors.New("invalid address hash")
 		}
 	default:

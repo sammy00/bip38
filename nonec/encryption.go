@@ -24,7 +24,7 @@ func Encrypt(data []byte, passphrase string, compressed bool) (
 	}
 
 	dk, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)),
-		addrHash, n, r, p, keyLen)
+		addrHash, N, R, P, KeyLen)
 	if nil != err {
 		return "", err
 	}

@@ -1,9 +1,16 @@
 package nonec
 
-// params for SCRYPT
+// Parameters configuration for SCRYPT
 const (
-	n      = 16384
-	r      = 8
-	p      = 8
-	keyLen = 64
+	N      = 16384
+	R      = 8
+	P      = 8
+	KeyLen = 64
 )
+
+const (
+	Compressed   = 0xe0
+	Uncompressed = 0xc0
+)
+
+const RawEncryptedKeyLen = 37
