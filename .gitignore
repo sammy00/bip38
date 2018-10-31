@@ -16,3 +16,6 @@ vendor/
 
 # coverage 
 *.cov
+
+# profiling 
+*.prof

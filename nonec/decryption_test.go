@@ -5,7 +5,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/sammy00/bip38/encoding"
 	"github.com/sammy00/bip38/nonec"
 )
 
@@ -87,27 +86,35 @@ func Test_Decrypt(t *testing.T) {
 		},
 	}
 
-	//encrypted := "6PRVWUbkzzsbcVac2qwfssoUJAN1Xhrg6bNk8J7Nzm5H7kxEbn2Nh2ZoGg"
-	encrypted := "6PYNKZ1EAgYgmQfmNVamxyXVWHzK5s6DGhwP4J5o44cvXdoY7sRzhtpUeo"
-	version, payload, _ := encoding.CheckDecode(encrypted, nonec.VersionLen)
-	t.Logf("%02x", payload)
-	//payload[5] ^= 0xff
-	payload = append(payload, 0xff)
-	t.Log(encoding.CheckEncode(version, payload))
+	/*
+		//encrypted := "6PRVWUbkzzsbcVac2qwfssoUJAN1Xhrg6bNk8J7Nzm5H7kxEbn2Nh2ZoGg"
+		encrypted := "6PYNKZ1EAgYgmQfmNVamxyXVWHzK5s6DGhwP4J5o44cvXdoY7sRzhtpUeo"
+		version, payload, _ := encoding.CheckDecode(encrypted, nonec.VersionLen)
+		t.Logf("%02x", payload)
+		//payload[5] ^= 0xff
+		payload = append(payload, 0xff)
+		t.Log(encoding.CheckEncode(version, payload))
+	*/
 
-	for i, c := range testCases {
-		unencrypted, err := nonec.Decrypt(c.encrypted, c.passphrase)
+	for _, c := range testCases {
+		c := c
 
-		if c.expect.hasErr && nil == err {
-			t.Fatalf("#%d expect error but got none", i)
-		} else if !c.expect.hasErr && nil != err {
-			t.Fatalf("#%d failed: unexpected error %v", i, err)
-		}
+		t.Run("", func(st *testing.T) {
+			st.Parallel()
 
-		if rawInHex := hex.EncodeToString(unencrypted); !c.expect.hasErr &&
-			!strings.EqualFold(rawInHex, c.expect.decrypted) {
-			t.Fatalf("#%d invalid unencrypted: got %s, expect %s", i,
-				rawInHex, c.expect.decrypted)
-		}
+			unencrypted, err := nonec.Decrypt(c.encrypted, c.passphrase)
+
+			if c.expect.hasErr && nil == err {
+				st.Fatalf("expect error but got none")
+			} else if !c.expect.hasErr && nil != err {
+				st.Fatalf("unexpected error %v", err)
+			}
+
+			if rawInHex := hex.EncodeToString(unencrypted); !c.expect.hasErr &&
+				!strings.EqualFold(rawInHex, c.expect.decrypted) {
+				st.Fatalf("invalid unencrypted: got %s, expect %s",
+					rawInHex, c.expect.decrypted)
+			}
+		})
 	}
 }
