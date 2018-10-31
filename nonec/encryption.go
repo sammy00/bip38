@@ -11,7 +11,7 @@ import (
 	"golang.org/x/crypto/scrypt"
 )
 
-// Encrypt encrypts the given private key byte sequence
+// Encrypt encrypts the given private key (32 bytes) byte sequence
 // with the given passphrase
 func Encrypt(data []byte, passphrase string, compressed bool) (
 	string, error) {
