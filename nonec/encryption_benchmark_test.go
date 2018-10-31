@@ -9,7 +9,7 @@ import (
 
 func BenchmarkEncrypt(b *testing.B) {
 	var benchmarkCases []encryptGoldie
-	readGolden(nil, "TestEncrypt", &benchmarkCases)
+	readGolden(b, "TestEncrypt", &benchmarkCases)
 
 	for _, bc := range benchmarkCases {
 		bc := bc
