@@ -46,16 +46,24 @@ func Test_Encrypt(t *testing.T) {
 		},
 	}
 
-	for i, c := range testCases {
-		raw, _ := hex.DecodeString(c.unencryptedHex)
+	for _, c := range testCases {
+		c := c
 
-		encrypted, err := nonec.Encrypt(raw, c.passphrase, c.compressed)
-		if nil != err {
-			t.Fatalf("#%d failed: unexpected error %v", i, err)
-		}
-		if encrypted != c.expect {
-			t.Fatalf("#%d invalid encrypted key: got %s, expect %s", i,
-				encrypted, c.expect)
-		}
+		t.Run("", func(st *testing.T) {
+			st.Parallel()
+
+			raw, _ := hex.DecodeString(c.unencryptedHex)
+
+			encrypted, err := nonec.Encrypt(raw, c.passphrase, c.compressed)
+
+			if nil != err {
+				st.Fatalf("unexpected error %v", err)
+			}
+
+			if encrypted != c.expect {
+				st.Fatalf("invalid encrypted key: got %s, expect %s",
+					encrypted, c.expect)
+			}
+		})
 	}
 }
