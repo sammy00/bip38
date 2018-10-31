@@ -7,13 +7,27 @@ import (
 	"testing"
 )
 
+type decryptExpect struct {
+	Unencrypted string `json:",omitempty"`
+	Bad         bool
+}
+
 type decryptGoldie struct {
 	Description string
 	Passphrase  string
 	Encrypted   string
 	WIF         string `json:",omitempty"`
-	Unencrypted string `json:",omitempty"`
-	Bad         bool
+	//Unencrypted string `json:",omitempty"`
+	//Bad         bool
+	Expect decryptExpect
+}
+
+type encryptGoldie struct {
+	Decription  string
+	Unencrypted string // unencrypted key in hex
+	Passphrase  string
+	Compressed  bool
+	Encrypted   string // this is the expected value after encryption
 }
 
 func readGolden(t *testing.T, name string, golden interface{}) {

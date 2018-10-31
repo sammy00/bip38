@@ -1,0 +1,37 @@
+[
+  {
+    "Decription": "uncompressed",
+    "Unencrypted": "CBF4B9F70470856BB4F40F80B87EDB90865997FFEE6DF315AB166D713AF433A5",
+    "Passphrase": "TestingOneTwoThree",
+    "Compressed": false,
+    "Encrypted": "6PRVWUbkzzsbcVac2qwfssoUJAN1Xhrg6bNk8J7Nzm5H7kxEbn2Nh2ZoGg"
+  },
+  {
+    "Decription": "uncompressed",
+    "Unencrypted": "09C2686880095B1A4C249EE3AC4EEA8A014F11E6F986D0B5025AC1F39AFBD9AE",
+    "Passphrase": "Satoshi",
+    "Compressed": false,
+    "Encrypted": "6PRNFFkZc2NZ6dJqFfhRoFNMR9Lnyj7dYGrzdgXXVMXcxoKTePPX1dWByq"
+  },
+  {
+    "Decription": "uncompressed",
+    "Unencrypted": "64eeab5f9be2a01a8365a579511eb3373c87c40da6d2a25f05bda68fe077b66e",
+    "Passphrase": "ϓ\u0000𐐀💩",
+    "Compressed": false,
+    "Encrypted": "6PRW5o9FLp4gJDDVqJQKJFTpMvdsSGJxMYHtHaQBF3ooa8mwD69bapcDQn"
+  },
+  {
+    "Decription": "uncompressed",
+    "Unencrypted": "CBF4B9F70470856BB4F40F80B87EDB90865997FFEE6DF315AB166D713AF433A5",
+    "Passphrase": "TestingOneTwoThree",
+    "Compressed": true,
+    "Encrypted": "6PYNKZ1EAgYgmQfmNVamxyXVWHzK5s6DGhwP4J5o44cvXdoY7sRzhtpUeo"
+  },
+  {
+    "Decription": "uncompressed",
+    "Unencrypted": "09C2686880095B1A4C249EE3AC4EEA8A014F11E6F986D0B5025AC1F39AFBD9AE",
+    "Passphrase": "Satoshi",
+    "Compressed": true,
+    "Encrypted": "6PYLtMnXvfG3oJde97zRyLYFZCYizPU5T3LwgdYJz1fRhh16bU7u6PPmY7"
+  }
+]
