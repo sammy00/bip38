@@ -16,6 +16,18 @@ type cfrmCodeGoldie struct {
 	ConfirmationCode           string // expected confirmation code
 }
 
+type decryptExpect struct {
+	Decrypted string `json:",omitempty"` // in hex
+	Bad       bool
+}
+
+type decryptGoldie struct {
+	Description string
+	Encrypted   string
+	Passphrase  string
+	Expect      decryptExpect
+}
+
 type encryptExpect struct {
 	PrivKey          string `json:",omitempty"`
 	ConfirmationCode string `json:",omitempty"`

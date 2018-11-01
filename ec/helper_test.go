@@ -116,6 +116,61 @@ func TestUpdateGenerateConfirmationCodeGolden(t *testing.T) {
 	writeGolden(t, "GenerateConfirmationCode", goldies)
 }
 
+func TestUpdateDecryptGolden(t *testing.T) {
+	goldies := []decryptGoldie{
+		{
+			"uncompressed, no lot/sequence",
+			"6PfQu77ygVyJLZjfvMLyhLMQbYnu5uguoJJ4kMCLqWwPEdfpwANVS76gTX",
+			"TestingOneTwoThree",
+			decryptExpect{
+				"A43A940577F4E97F5C4D39EB14FF083A98187C64EA7C99EF7CE460833959A519",
+				false,
+			},
+		},
+		{
+			"uncompressed, no lot/sequence",
+			"6PfLGnQs6VZnrNpmVKfjotbnQuaJK4KZoPFrAjx1JMJUa1Ft8gnf5WxfKd",
+			"Satoshi",
+			decryptExpect{
+				"C2C8036DF268F498099350718C4A3EF3984D2BE84618C2650F5171DCC5EB660A",
+				false,
+			},
+		},
+		{
+			"uncompressed, with lot/sequence",
+			"6PgNBNNzDkKdhkT6uJntUXwwzQV8Rr2tZcbkDcuC9DZRsS6AtHts4Ypo1j",
+			"MOLON LABE",
+			decryptExpect{
+				"44EA95AFBF138356A05EA32110DFD627232D0F2991AD221187BE356F19FA8190",
+				false,
+			},
+		},
+		{
+			"uncompressed, with lot/sequence",
+			"6PgGWtx25kUg8QWvwuJAgorN6k9FbE25rv5dMRwu5SKMnfpfVe5mar2ngH",
+			"ΜΟΛΩΝ ΛΑΒΕ",
+			decryptExpect{
+				"CA2759AA4ADB0F96C414F36ABEB8DB59342985BE9FA50FAAC228C8E7D90E3006",
+				false,
+			},
+		},
+		{
+			"corrupted encrypted part1",
+			"6PfQu77ygVyJLZjfvMLyC6yJ5ZL5YxH55rpxFNvDEQ42qgGRFAH2CqYosc",
+			"TestingOneTwoThree",
+			decryptExpect{"", true},
+		},
+		{
+			"invalid base58 checksum",
+			"6PfQu77ygVyJLZjfvMLyhLMQbYnu5uguoJJ4kMCLqWwPEdfpwANVS76gTY",
+			"TestingOneTwoThree",
+			decryptExpect{"", true},
+		},
+	}
+
+	writeGolden(t, "Decrypt", goldies)
+}
+
 func TestUpdateEncryptGolden(t *testing.T) {
 	goldies := []encryptGoldie{
 		{
