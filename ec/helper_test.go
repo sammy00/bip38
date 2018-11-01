@@ -3,10 +3,9 @@
 package ec_test
 
 import (
-	"encoding/json"
-	"os"
-	"path/filepath"
 	"testing"
+
+	"github.com/sammy00/bip38/internal/xtesting"
 )
 
 func TestUpdateGenerateConfirmationCodeGolden(t *testing.T) {
@@ -113,7 +112,7 @@ func TestUpdateGenerateConfirmationCodeGolden(t *testing.T) {
 		},
 	}
 
-	writeGolden(t, "GenerateConfirmationCode", goldies)
+	xtesting.EncodeGoldenToJSON(t, "GenerateConfirmationCode", goldies)
 }
 
 func TestUpdateDecryptGolden(t *testing.T) {
@@ -168,7 +167,7 @@ func TestUpdateDecryptGolden(t *testing.T) {
 		},
 	}
 
-	writeGolden(t, "Decrypt", goldies)
+	xtesting.EncodeGoldenToJSON(t, "Decrypt", goldies)
 }
 
 func TestUpdateEncryptGolden(t *testing.T) {
@@ -284,7 +283,7 @@ func TestUpdateEncryptGolden(t *testing.T) {
 		},
 	}
 
-	writeGolden(t, "Encrypt", goldies)
+	xtesting.EncodeGoldenToJSON(t, "Encrypt", goldies)
 }
 
 func TestUpdateEncryptPassphraseGolden(t *testing.T) {
@@ -315,7 +314,7 @@ func TestUpdateEncryptPassphraseGolden(t *testing.T) {
 		},
 	}
 
-	writeGolden(t, "EncryptPassphrase", goldies)
+	xtesting.EncodeGoldenToJSON(t, "EncryptPassphrase", goldies)
 }
 
 func TestUpdateEncryptPassphraseXGolden(t *testing.T) {
@@ -349,7 +348,7 @@ func TestUpdateEncryptPassphraseXGolden(t *testing.T) {
 		},
 	}
 
-	writeGolden(t, "EncryptPassphraseX", goldies)
+	xtesting.EncodeGoldenToJSON(t, "EncryptPassphraseX", goldies)
 }
 
 func TestUpdateRecoverAddressGolden(t *testing.T) {
@@ -437,20 +436,5 @@ func TestUpdateRecoverAddressGolden(t *testing.T) {
 		},
 	}
 
-	writeGolden(t, "RecoverAddress", goldies)
-}
-
-func writeGolden(t *testing.T, name string, goldies interface{}) {
-	fd, err := os.OpenFile(filepath.Join("testdata", "Test"+name+".golden"),
-		os.O_CREATE|os.O_RDWR, 0644)
-	if nil != err {
-		t.Fatal(err)
-	}
-	defer fd.Close()
-
-	marshaler := json.NewEncoder(fd)
-	marshaler.SetIndent("", "  ")
-	if err := marshaler.Encode(goldies); nil != err {
-		t.Fatal(err)
-	}
+	xtesting.EncodeGoldenToJSON(t, "RecoverAddress", goldies)
 }

@@ -4,13 +4,15 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/sammy00/bip38/internal/xtesting"
+
 	"github.com/sammy00/bip38/ec"
 )
 
 func BenchmarkEncrypt(b *testing.B) {
 	var allCases []encryptGoldie
-	readGolden(b, strings.Replace(b.Name(), "Benchmark", "Test", 1),
-		&allCases)
+	xtesting.DecodeGoldenJSON(b,
+		strings.Replace(b.Name(), "Benchmark", "Test", 1), &allCases)
 
 	var benchmarkCases []encryptGoldie
 	for _, v := range allCases {

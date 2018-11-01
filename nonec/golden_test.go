@@ -1,14 +1,10 @@
 package nonec_test
 
-import (
-	"encoding/json"
-	"os"
-	"path/filepath"
-)
-
+/*
 type fataler interface {
 	Fatal(args ...interface{})
 }
+*/
 
 type decryptExpect struct {
 	Unencrypted string `json:",omitempty"`
@@ -33,7 +29,8 @@ type encryptGoldie struct {
 	Encrypted   string // this is the expected value after encryption
 }
 
-func readGolden(f fataler, name string, golden interface{}) {
+/*
+func readGolden(f xtesting.Logger, name string, golden interface{}) {
 	fd, err := os.Open(filepath.Join("testdata", name+".golden"))
 	if nil != err {
 		f.Fatal(err)
@@ -45,3 +42,4 @@ func readGolden(f fataler, name string, golden interface{}) {
 		f.Fatal(err)
 	}
 }
+*/

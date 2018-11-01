@@ -5,12 +5,14 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/sammy00/bip38/internal/xtesting"
+
 	"github.com/sammy00/bip38/ec"
 )
 
 func TestDecrypt(t *testing.T) {
 	var testCases []decryptGoldie
-	readGolden(t, t.Name(), &testCases)
+	xtesting.DecodeGoldenJSON(t, t.Name(), &testCases)
 
 	for _, c := range testCases {
 		c := c

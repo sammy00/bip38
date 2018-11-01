@@ -49,7 +49,6 @@
     "Passphrase": "TestingOneTwoThree",
     "ConfirmationCode": "cfrm38V5UPS5Aik2Z91tWbgNUTDmL4uKyUF4CX7wATVikgxRfg9tjCT7Mdon16uVeWCJqjnFGtt",
     "Expect": {
-      "Address": "",
       "Bad": true
     }
   },
@@ -58,7 +57,6 @@
     "Passphrase": "TestingOneTwoThree",
     "ConfirmationCode": "passphrasepxFy57B9v8HtUsszJYKReoNDV6VHjUSGt8EVJmux9n1J3Ltf1gRxyDGXqnf9qm",
     "Expect": {
-      "Address": "",
       "Bad": true
     }
   },
@@ -67,7 +65,6 @@
     "Passphrase": "TestingOneTwoThree",
     "ConfirmationCode": "cfrm38V5UPS5Aik2Z91tWbgNUMPXoNZERCDNo4NpSiditjA6vLJjn5vUzibTGeqofYB9MsZmCz9",
     "Expect": {
-      "Address": "",
       "Bad": true
     }
   },
@@ -75,6 +72,12 @@
     "Description": "invalid address hash",
     "Passphrase": "TestingOneTwoThree",
     "ConfirmationCode": "cfrm38V5UPS5Aik2Z91tWbgNURH29qTJ83Zq4hYEFssioNMekZYB5VcEZzjfkxDberBvM5pPV7A",
+    "Expect": {
+      "Bad": true
+    }
+  }
+]
+xDberBvM5pPV7A",
     "Expect": {
       "Address": "",
       "Bad": true

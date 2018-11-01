@@ -4,13 +4,15 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/sammy00/bip38/internal/xtesting"
+
 	"github.com/sammy00/bip38/ec"
 )
 
 func BenchmarkEncryptPassphrase(b *testing.B) {
 	var allCases []encryptPassphraseGoldie
-	readGolden(b, strings.Replace(b.Name(), "Benchmark", "Test", 1),
-		&allCases)
+	xtesting.DecodeGoldenJSON(b,
+		strings.Replace(b.Name(), "Benchmark", "Test", 1), &allCases)
 
 	var benchmarkCases []encryptPassphraseGoldie
 	for _, v := range allCases {
@@ -36,8 +38,8 @@ func BenchmarkEncryptPassphrase(b *testing.B) {
 
 func BenchmarkEncryptPassphraseX(b *testing.B) {
 	var allCases []encryptPassphraseXGoldie
-	readGolden(b, strings.Replace(b.Name(), "Benchmark", "Test", 1),
-		&allCases)
+	xtesting.DecodeGoldenJSON(b,
+		strings.Replace(b.Name(), "Benchmark", "Test", 1), &allCases)
 
 	var benchmarkCases []encryptPassphraseXGoldie
 	for _, v := range allCases {

@@ -3,10 +3,9 @@
 package nonec_test
 
 import (
-	"encoding/json"
-	"os"
-	"path/filepath"
 	"testing"
+
+	"github.com/sammy00/bip38/internal/xtesting"
 )
 
 func TestUpdateDecryptGolden(t *testing.T) {
@@ -114,19 +113,22 @@ func TestUpdateDecryptGolden(t *testing.T) {
 		},
 	}
 
-	const golden = "TestDecrypt.golden"
-	fd, err := os.OpenFile(filepath.Join("testdata", golden),
-		os.O_CREATE|os.O_RDWR, 0644)
-	if nil != err {
-		t.Fatal(err)
-	}
-	defer fd.Close()
+	/*
+		const golden = "TestDecrypt.golden"
+		fd, err := os.OpenFile(filepath.Join("testdata", golden),
+			os.O_CREATE|os.O_RDWR, 0644)
+		if nil != err {
+			t.Fatal(err)
+		}
+		defer fd.Close()
 
-	marshaler := json.NewEncoder(fd)
-	marshaler.SetIndent("", "  ")
-	if err := marshaler.Encode(goldies); nil != err {
-		t.Fatal(err)
-	}
+		marshaler := json.NewEncoder(fd)
+		marshaler.SetIndent("", "  ")
+		if err := marshaler.Encode(goldies); nil != err {
+			t.Fatal(err)
+		}
+	*/
+	xtesting.EncodeGoldenToJSON(t, "Decrypt", goldies)
 }
 
 func TestUpdateEncryptGolden(t *testing.T) {
@@ -168,17 +170,21 @@ func TestUpdateEncryptGolden(t *testing.T) {
 		},
 	}
 
-	const golden = "TestEncrypt.golden"
-	fd, err := os.OpenFile(filepath.Join("testdata", golden),
-		os.O_CREATE|os.O_RDWR, 0644)
-	if nil != err {
-		t.Fatal(err)
-	}
-	defer fd.Close()
+	/*
+		const golden = "TestEncrypt.golden"
+		fd, err := os.OpenFile(filepath.Join("testdata", golden),
+			os.O_CREATE|os.O_RDWR, 0644)
+		if nil != err {
+			t.Fatal(err)
+		}
+		defer fd.Close()
 
-	marshaler := json.NewEncoder(fd)
-	marshaler.SetIndent("", "  ")
-	if err := marshaler.Encode(goldies); nil != err {
-		t.Fatal(err)
-	}
+		marshaler := json.NewEncoder(fd)
+		marshaler.SetIndent("", "  ")
+		if err := marshaler.Encode(goldies); nil != err {
+			t.Fatal(err)
+		}
+	*/
+
+	xtesting.EncodeGoldenToJSON(t, "Encrypt", goldies)
 }

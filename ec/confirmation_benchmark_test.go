@@ -5,12 +5,13 @@ import (
 	"testing"
 
 	"github.com/sammy00/bip38/ec"
+	"github.com/sammy00/bip38/internal/xtesting"
 )
 
 func BenchmarkGenerateConfirmationCode(b *testing.B) {
 	var benchmarkCases []cfrmCodeGoldie
-	readGolden(b, strings.Replace(b.Name(), "Benchmark", "Test", 1),
-		&benchmarkCases)
+	xtesting.DecodeGoldenJSON(b,
+		strings.Replace(b.Name(), "Benchmark", "Test", 1), &benchmarkCases)
 
 	for _, c := range benchmarkCases {
 		c := c
@@ -28,8 +29,8 @@ func BenchmarkGenerateConfirmationCode(b *testing.B) {
 
 func BenchmarkRecoverAddress(b *testing.B) {
 	var benchmarkCases []recoverAddressGoldie
-	readGolden(b, strings.Replace(b.Name(), "Benchmark", "Test", 1),
-		&benchmarkCases)
+	xtesting.DecodeGoldenJSON(b,
+		strings.Replace(b.Name(), "Benchmark", "Test", 1), &benchmarkCases)
 
 	var okCases []recoverAddressGoldie
 	for _, v := range benchmarkCases {

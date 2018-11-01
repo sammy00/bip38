@@ -4,12 +4,13 @@ import (
 	"encoding/hex"
 	"testing"
 
+	"github.com/sammy00/bip38/internal/xtesting"
 	"github.com/sammy00/bip38/nonec"
 )
 
 func TestEncrypt(t *testing.T) {
 	var testCases []encryptGoldie
-	readGolden(t, t.Name(), &testCases)
+	xtesting.DecodeGoldenJSON(t, t.Name(), &testCases)
 
 	for _, c := range testCases {
 		c := c

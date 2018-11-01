@@ -1,11 +1,5 @@
 package ec_test
 
-import (
-	"encoding/json"
-	"os"
-	"path/filepath"
-)
-
 type cfrmCodeGoldie struct {
 	Flag                       byte
 	AddrHash                   []byte
@@ -71,16 +65,11 @@ type recoverAddressGoldie struct {
 	Description      string
 	Passphrase       string
 	ConfirmationCode string
-	//ExpectAddress    string // expected bitcoin address
-	//ExpectErr        bool
-	Expect recoverAddressExpect
+	Expect           recoverAddressExpect
 }
 
-type fataler interface {
-	Fatal(args ...interface{})
-}
-
-func readGolden(f fataler, name string, golden interface{}) {
+/*
+func readGolden(f xtesting.Logger, name string, golden interface{}) {
 	fd, err := os.Open(filepath.Join("testdata", name+".golden"))
 	if nil != err {
 		f.Fatal(err)
@@ -92,3 +81,4 @@ func readGolden(f fataler, name string, golden interface{}) {
 		f.Fatal(err)
 	}
 }
+*/

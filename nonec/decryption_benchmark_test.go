@@ -3,12 +3,13 @@ package nonec_test
 import (
 	"testing"
 
+	"github.com/sammy00/bip38/internal/xtesting"
 	"github.com/sammy00/bip38/nonec"
 )
 
 func BenchmarkDecrypt(b *testing.B) {
 	var benchmarkCases []decryptGoldie
-	readGolden(b, "TestDecrypt", &benchmarkCases)
+	xtesting.DecodeGoldenJSON(b, "TestDecrypt", &benchmarkCases)
 
 	var okCases []decryptGoldie
 	for _, v := range benchmarkCases {
