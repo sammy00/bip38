@@ -17,8 +17,11 @@ func BenchmarkGenerateConfirmationCode(b *testing.B) {
 
 		b.Run("", func(sb *testing.B) {
 			sb.ReportAllocs()
-			ec.GenerateConfirmationCode(c.Flag, c.AddrHash, c.OwnerEntropy, c.B,
-				c.DerivedHalf1, c.DerivedHalf2)
+
+			for i := 0; i < sb.N; i++ {
+				ec.GenerateConfirmationCode(c.Flag, c.AddrHash, c.OwnerEntropy, c.B,
+					c.DerivedHalf1, c.DerivedHalf2)
+			}
 		})
 	}
 }
@@ -41,7 +44,9 @@ func BenchmarkRecoverAddress(b *testing.B) {
 		b.Run(c.Description, func(sb *testing.B) {
 			sb.ReportAllocs()
 
-			ec.RecoverAddress(c.Passphrase, c.ConfirmationCode)
+			for i := 0; i < sb.N; i++ {
+				ec.RecoverAddress(c.Passphrase, c.ConfirmationCode)
+			}
 		})
 	}
 }

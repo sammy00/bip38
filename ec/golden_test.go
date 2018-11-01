@@ -16,8 +16,22 @@ type cfrmCodeGoldie struct {
 	ConfirmationCode           string // expected confirmation code
 }
 
+type encryptExpect struct {
+	PrivKey          string `json:",omitempty"`
+	ConfirmationCode string `json:",omitempty"`
+	Bad              bool   // true if the provided inputs is malformed
+}
+
+type encryptGoldie struct {
+	Description    string
+	Entropy        []byte
+	PassphraseCode string
+	Compressed     bool
+	Expect         encryptExpect
+}
+
 type recoverAddressExpect struct {
-	Address string // expected bitcoin address
+	Address string `json:",omitempty"` // expected bitcoin address
 	Bad     bool   // whether the address is malformed
 }
 
