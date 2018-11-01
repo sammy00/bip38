@@ -37,11 +37,11 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 
 	addrHash, ownerEntropy := payload[:4], payload[4:12]
 
-	pass, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerSalt,
+	pass, _ := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerSalt,
 		N1, R1, P1, KeyLen1)
-	if nil != err {
-		return nil, err
-	}
+	//if nil != err {
+	//	return nil, err
+	//}
 
 	if 0 != flag&0x04 {
 		pass = hash.DoubleSum(append(pass, ownerEntropy[:]...))
@@ -56,10 +56,10 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 		return nil, err
 	}
 
-	decryptor, err := aes.NewCipher(dk[32:])
-	if nil != err {
-		return nil, err
-	}
+	decryptor, _ := aes.NewCipher(dk[32:])
+	//if nil != err {
+	//	return nil, err
+	//}
 
 	var out [16]byte
 

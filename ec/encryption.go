@@ -51,15 +51,15 @@ func Encrypt(rand io.Reader, passphraseEx string,
 	// ownerEntropy=payload[:8]
 	// passPoint=payload[8:]
 	salt := append(addrHash, payload[:8]...)
-	dk, err := scrypt.Key(payload[8:], salt, N2, R2, P2, KeyLen2)
-	if nil != err {
-		return "", "", err
-	}
+	dk, _ := scrypt.Key(payload[8:], salt, N2, R2, P2, KeyLen2)
+	//if nil != err {
+	//	return "", "", err
+	//}
 
-	encryptor, err := aes.NewCipher(dk[32:])
-	if nil != err {
-		return "", "", err
-	}
+	encryptor, _ := aes.NewCipher(dk[32:])
+	//if nil != err {
+	//	return "", "", err
+	//}
 
 	var block, encryptedPart1, encryptedPart2 [16]byte
 
@@ -90,11 +90,11 @@ func Encrypt(rand io.Reader, passphraseEx string,
 	out = append(out, encryptedPart1[:8]...)
 	out = append(out, encryptedPart2[:]...)
 
-	code, err := GenerateConfirmationCode(flag, addrHash, payload[:8], b,
+	code, _ := GenerateConfirmationCode(flag, addrHash, payload[:8], b,
 		dk[:32], dk[32:])
-	if nil != err {
-		return "", "", err
-	}
+	//if nil != err {
+	//	return "", "", err
+	//}
 
 	return encoding.CheckEncode(Version, out), code, nil
 }

@@ -69,11 +69,11 @@ func RecoverAddress(passphrase, code string) (string, error) {
 		ownerSalt = ownerEntropy
 	}
 
-	pass, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerSalt,
+	pass, _ := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerSalt,
 		N1, R1, P1, KeyLen1)
-	if nil != err {
-		return "", err
-	}
+	//if nil != err {
+	//	return "", err
+	//}
 
 	if 0 != flag&0x04 { // lot-sequence being included
 		pass = hash.DoubleSum(append(pass, ownerEntropy[:]...))
@@ -85,15 +85,15 @@ func RecoverAddress(passphrase, code string) (string, error) {
 	passPoint := pubKey.SerializeCompressed()
 
 	// addrHash|ownerEntropy=rawCode[1:13]
-	dk, err := scrypt.Key(passPoint, rawCode[1:13], N2, R2, P2, KeyLen2)
-	if nil != err {
-		return "", err
-	}
+	dk, _ := scrypt.Key(passPoint, rawCode[1:13], N2, R2, P2, KeyLen2)
+	//if nil != err {
+	//	return "", err
+	//}
 
-	decryptor, err := aes.NewCipher(dk[32:])
-	if nil != err {
-		return "", err
-	}
+	decryptor, _ := aes.NewCipher(dk[32:])
+	//if nil != err {
+	//	return "", err
+	//}
 
 	var B [33]byte
 

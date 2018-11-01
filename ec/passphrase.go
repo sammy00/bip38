@@ -21,11 +21,11 @@ func EncryptPassphrase(rand io.Reader, passphrase string) (
 	}
 
 	// ownerSalt=ownerEntropy, and pre->pass conversion is omitted
-	pass, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerEntropy[:],
+	pass, _ := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerEntropy[:],
 		N1, R1, P1, KeyLen1)
-	if nil != err {
-		return "", err
-	}
+	//if nil != err {
+	//	return "", err
+	//}
 
 	_, pub := btcec.PrivKeyFromBytes(btcec.S256(), pass)
 	passPoint := pub.SerializeCompressed()
@@ -49,11 +49,11 @@ func EncryptPassphraseX(rand io.Reader, passphrase string,
 	ownerEntropy[6] = byte((lot << 4 & 0xf0) | (sequence >> 8 & 0x0f))
 	ownerEntropy[7] = byte(sequence & 0xff)
 
-	pre, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerEntropy[:4],
+	pre, _ := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)), ownerEntropy[:4],
 		N1, R1, P1, KeyLen1)
-	if nil != err {
-		return "", err
-	}
+	//if nil != err {
+	//	return "", err
+	//}
 
 	pass := hash.DoubleSum(append(pre, ownerEntropy[:]...))
 
