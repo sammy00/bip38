@@ -27,16 +27,10 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	flag, addrHash := payload[0], payload[1:5]
 	encryptedHalf1, encryptedHalf2 := payload[5:21], payload[21:]
 
-	dk, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)),
+	dk, _ := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)),
 		addrHash, N, R, P, KeyLen)
-	if nil != err {
-		return nil, err
-	}
 
-	C, err := aes.NewCipher(dk[32:])
-	if nil != err {
-		return nil, err
-	}
+	C, _ := aes.NewCipher(dk[32:])
 
 	var priv [32]byte
 	C.Decrypt(priv[:16], encryptedHalf1)

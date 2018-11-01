@@ -23,11 +23,8 @@ func Encrypt(data []byte, passphrase string, compressed bool) (
 		addrHash = hash.AddressChecksum(data, false)
 	}
 
-	dk, err := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)),
+	dk, _ := scrypt.Key(norm.NFC.Bytes([]byte(passphrase)),
 		addrHash, N, R, P, KeyLen)
-	if nil != err {
-		return "", err
-	}
 
 	var payload [37]byte
 	if compressed {
@@ -37,10 +34,7 @@ func Encrypt(data []byte, passphrase string, compressed bool) (
 	}
 	copy(payload[1:], addrHash) // append salt
 
-	C, err := aes.NewCipher(dk[32:])
-	if nil != err {
-		return "", err
-	}
+	C, _ := aes.NewCipher(dk[32:])
 
 	var block [32]byte
 	bytes.XOR(block[:], data, dk[:32])
