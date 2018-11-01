@@ -42,6 +42,26 @@ type encryptGoldie struct {
 	Expect         encryptExpect
 }
 
+type encryptPassphraseExpect struct {
+	PassphraseCode string `json:",omitempty"`
+	Bad            bool   // indicate whether the inputs are malformed
+}
+
+type encryptPassphraseGoldie struct {
+	Description string
+	Entropy     []byte
+	Passphrase  string
+	Expect      encryptPassphraseExpect
+}
+
+type encryptPassphraseXGoldie struct {
+	Description   string
+	Entropy       []byte
+	Passphrase    string
+	Lot, Sequence uint32
+	Expect        encryptPassphraseExpect
+}
+
 type recoverAddressExpect struct {
 	Address string `json:",omitempty"` // expected bitcoin address
 	Bad     bool   // whether the address is malformed

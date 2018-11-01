@@ -1,0 +1,34 @@
+[
+  {
+    "Description": "ok, with lot/sequence",
+    "Entropy": "T8palw==",
+    "Passphrase": "MOLON LABE",
+    "Lot": 263183,
+    "Sequence": 1,
+    "Expect": {
+      "PassphraseCode": "passphraseaB8feaLQDENqCgr4gKZpmf4VoaT6qdjJNJiv7fsKvjqavcJxvuR1hy25aTu5sX",
+      "Bad": false
+    }
+  },
+  {
+    "Description": "ok, with lot/sequence",
+    "Entropy": "xA6nbw==",
+    "Passphrase": "ΜΟΛΩΝ ΛΑΒΕ",
+    "Lot": 806938,
+    "Sequence": 1,
+    "Expect": {
+      "PassphraseCode": "passphrased3z9rQJHSyBkNBwTRPkUGNVEVrUAcfAXDyRU1V28ie6hNFbqDwbFBvsTK7yWVK",
+      "Bad": false
+    }
+  },
+  {
+    "Description": "not enough entropy",
+    "Entropy": "T8pa",
+    "Passphrase": "MOLON LABE",
+    "Lot": 263183,
+    "Sequence": 1,
+    "Expect": {
+      "Bad": true
+    }
+  }
+]

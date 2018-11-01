@@ -1,0 +1,28 @@
+[
+  {
+    "Description": "ok, no lot/sequence",
+    "Entropy": "pQ26Z3LLk4M=",
+    "Passphrase": "TestingOneTwoThree",
+    "Expect": {
+      "PassphraseCode": "passphrasepxFy57B9v8HtUsszJYKReoNDV6VHjUSGt8EVJmux9n1J3Ltf1gRxyDGXqnf9qm",
+      "Bad": false
+    }
+  },
+  {
+    "Description": "ok, no lot/sequence",
+    "Entropy": "ZwEKlXNBiQY=",
+    "Passphrase": "Satoshi",
+    "Expect": {
+      "PassphraseCode": "passphraseoRDGAXTWzbp72eVbtUDdn1rwpgPUGjNZEc6CGBo8i5EC1FPW8wcnLdq4ThKzAS",
+      "Bad": false
+    }
+  },
+  {
+    "Description": "not enough entropy",
+    "Entropy": "pQ26Z3LLkw==",
+    "Passphrase": "TestingOneTwoThree",
+    "Expect": {
+      "Bad": true
+    }
+  }
+]
