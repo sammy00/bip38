@@ -33,7 +33,6 @@ type encryptGoldie struct {
 	Encrypted   string // this is the expected value after encryption
 }
 
-//func readGolden(t *testing.T, name string, golden interface{}) {
 func readGolden(f fataler, name string, golden interface{}) {
 	fd, err := os.Open(filepath.Join("testdata", name+".golden"))
 	if nil != err {
