@@ -15,7 +15,9 @@ import (
 )
 
 // GenerateConfirmationCode derives the corresponding confirmation code
-// based on the intermediate information during private key encryption
+// based on the intermediate information during private key encryption.
+// Especially, both derivedHalf1 and derivedHalf2 should be of exact length
+// as 32 bytes. Otherwise, the program would behave unexpectedly.
 func GenerateConfirmationCode(flag byte, addrHash, ownerEntropy, b,
 	derivedHalf1, derivedHalf2 []byte) (string, error) {
 	curve := btcec.S256()
@@ -26,10 +28,10 @@ func GenerateConfirmationCode(flag byte, addrHash, ownerEntropy, b,
 	var encrypted [33]byte
 	encrypted[0] = B[0] ^ (derivedHalf2[31] & 0x01)
 
-	encryptor, err := aes.NewCipher(derivedHalf2)
-	if nil != err {
-		return "", err
-	}
+	encryptor, _ := aes.NewCipher(derivedHalf2)
+	//if nil != err {
+	//	return "", err
+	//}
 
 	bytes.XOR(B[1:], B[1:], derivedHalf1)
 	encryptor.Encrypt(encrypted[1:17], B[1:17])
