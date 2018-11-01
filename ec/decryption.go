@@ -51,10 +51,10 @@ func Decrypt(encrypted string, passphrase string) ([]byte, error) {
 	passPoint := pub.SerializeCompressed()
 
 	salt := append(addrHash, ownerEntropy...)
-	dk, err := scrypt.Key(passPoint, salt, N2, R2, P2, KeyLen2)
-	if nil != err {
-		return nil, err
-	}
+	dk, _ := scrypt.Key(passPoint, salt, N2, R2, P2, KeyLen2)
+	//if nil != err {
+	//	return nil, err
+	//}
 
 	decryptor, _ := aes.NewCipher(dk[32:])
 	//if nil != err {
