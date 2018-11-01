@@ -90,7 +90,7 @@ func Encrypt(rand io.Reader, passphraseEx string,
 	out = append(out, encryptedPart1[:8]...)
 	out = append(out, encryptedPart2[:]...)
 
-	code, _ := GenerateConfirmationCode(flag, addrHash, payload[:8], b,
+	code := GenerateConfirmationCode(flag, addrHash, payload[:8], b,
 		dk[:32], dk[32:])
 	//if nil != err {
 	//	return "", "", err

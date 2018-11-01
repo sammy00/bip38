@@ -19,7 +19,7 @@ import (
 // Especially, both derivedHalf1 and derivedHalf2 should be of exact length
 // as 32 bytes. Otherwise, the program would behave unexpectedly.
 func GenerateConfirmationCode(flag byte, addrHash, ownerEntropy, b,
-	derivedHalf1, derivedHalf2 []byte) (string, error) {
+	derivedHalf1, derivedHalf2 []byte) string {
 	curve := btcec.S256()
 	Bx, By := curve.ScalarBaseMult(b)
 	pubKey := &btcec.PublicKey{X: Bx, Y: By}
@@ -43,7 +43,7 @@ func GenerateConfirmationCode(flag byte, addrHash, ownerEntropy, b,
 	copy(payload[5:], ownerEntropy)
 	copy(payload[13:], encrypted[:])
 
-	return encoding.CheckEncode(ConfirmationMagicCode, payload), nil
+	return encoding.CheckEncode(ConfirmationMagicCode, payload)
 }
 
 // RecoverAddress recovers the generated address out of the given confirmation

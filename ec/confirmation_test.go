@@ -13,7 +13,7 @@ func TestGenerateConfirmationCode(t *testing.T) {
 	xtesting.DecodeGoldenJSON(t, t.Name(), &testCases)
 
 	for i, c := range testCases {
-		got, _ := ec.GenerateConfirmationCode(c.Flag, c.AddrHash, c.OwnerEntropy,
+		got := ec.GenerateConfirmationCode(c.Flag, c.AddrHash, c.OwnerEntropy,
 			c.B, c.DerivedHalf1, c.DerivedHalf2)
 		if got != c.ConfirmationCode {
 			t.Fatalf("#%d failed: got %s, expect %s", i, got, c.ConfirmationCode)
