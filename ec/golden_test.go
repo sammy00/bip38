@@ -16,6 +16,20 @@ type cfrmCodeGoldie struct {
 	ConfirmationCode           string // expected confirmation code
 }
 
+type recoverAddressExpect struct {
+	Address string // expected bitcoin address
+	Bad     bool   // whether the address is malformed
+}
+
+type recoverAddressGoldie struct {
+	Description      string
+	Passphrase       string
+	ConfirmationCode string
+	//ExpectAddress    string // expected bitcoin address
+	//ExpectErr        bool
+	Expect recoverAddressExpect
+}
+
 type fataler interface {
 	Fatal(args ...interface{})
 }
